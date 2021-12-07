@@ -3,9 +3,11 @@ package package_1;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class Gala {
+    private final LocalDate DATE;
     private static int taillepqueue = 400; //taille initiale de la priority queue qu'on double lors d'ajout si nécessaire
     private static double tarif1 = 10.0;
     private static double tarif2 = 15.0;
@@ -16,6 +18,8 @@ public class Gala {
     private static int nbPlacesTotalesDispoPerso = nbTotalTablesPersonnel * 8;
     private SortedSet<Etudiant> lesEtudiants = new TreeSet<>();
     private SortedSet<Personnel> lePersonnel = new TreeSet<>();
+    private SortedSet<Etudiant> lesEtudiantsInscrit = new TreeSet<>();
+    private SortedSet<Personnel> lePersonnelInscrit = new TreeSet<>();
     private PriorityQueue<Etudiant> etudiantDemandeAttente = new PriorityQueue<Etudiant>(taillepqueue, new Comparator<Etudiant>() {
         @Override
         public int compare(Etudiant e1, Etudiant e2) {
@@ -38,6 +42,8 @@ public class Gala {
     private static SortedSet<Table> lesTables = new TreeSet<>();
 
     public Gala(LocalDate date) throws FileNotFoundException {
+        this.DATE=date;
+
         Scanner sc = new Scanner(new File("src\\etudiants.txt"));
         while (sc.hasNextLine()) {
             int numero = Integer.parseInt(sc.next());
@@ -88,21 +94,37 @@ public class Gala {
 
     public boolean inscriptionEtudiant(int numeroetu, String nom, String prenom, int tel, String email, int annee) {
         Etudiant etudiant = new Etudiant(numeroetu, nom, prenom, tel, email, annee);
-        if (!lesEtudiants.contains(etudiant)) {
-            lesEtudiants.add(etudiant);
+        if (lesEtudiants.contains(etudiant) && !lesEtudiantsInscrit.contains(etudiant)) {
+            lesEtudiantsInscrit.add(etudiant);
             return true;
         }
         return false;
     }
 
+
     public boolean inscriptionPersonnel(int numero, String nom, String prenom, int tel, String email) {
         Personnel personnel = new Personnel(numero, nom, prenom, tel, email);
-        if (!lePersonnel.contains(personnel)) {
-            lePersonnel.add(personnel);
+        if (lePersonnel.contains(personnel) && !lePersonnelInscrit.contains(personnel)) {
+            lePersonnelInscrit.add(personnel);
             return true;
         }
         return false;
     }
+
+    public void desincrire(Particulier part) {
+        if (lesReservations.get(part)!=null){
+            supprimerReservation(part);
+        }
+        if (lesEtudiantsInscrit.contains(part)){
+            lesEtudiantsInscrit.remove(part);
+        }
+        if (lePersonnelInscrit.contains(part)){
+            lePersonnelInscrit.remove(part);
+        }
+        throw new PasInscritException();
+
+    }
+
 
     public boolean creerReservation(Etudiant e, int nombrePlaces) {
         if (!lesReservations.containsKey(e)) {
@@ -118,7 +140,7 @@ public class Gala {
 
     //Pour les Etudiants
     //Avant appel vérifier s'il est dans la map étudiants accepté
-    public boolean confirmerReservation(Etudiant e, Reservation reserv, int numeroTable) throws PlusDePlaceDispoException {
+    public boolean confirmerReservation(Etudiant e, Reservation reserv, int numeroTable) {
         for (Table table : lesTables) {
             if (table.getNumTable() == numeroTable && table.getNombrePlacesLibres() >= reserv.getNombrePlaces()) {
                 double montant = calculMontant(e, reserv.getNombrePlaces());
@@ -134,7 +156,7 @@ public class Gala {
     }
 
     //Pour le Personnel (pas de réserv préalable)
-    public boolean creerReservation(Personnel pers, int nombrePlaces, int numeroTable) throws PlusDePlaceDispoException {
+    public boolean creerReservation(Personnel pers, int nombrePlaces, int numeroTable) {
         if (!lesReservations.containsKey(pers)) {
             if (nombrePlaces <= 2 && nombrePlaces > 0) {
                 for (Table table : lesTables) {
@@ -153,8 +175,19 @@ public class Gala {
         return false;
     }
 
-    public boolean supprimerReservation(Particulier part){
-        int numeroTables
+    public void supprimerReservation(Particulier part){
+        if (lesReservations.get(part)!=null){
+            int numeroTable = lesReservations.get(part).getNumeroTable();
+            LocalDate dateReserv = lesReservations.get(part).getDateReservation();
+            if (ChronoUnit.DAYS.between(dateReserv,DATE)>=10){
+                if (lesEtudiantsInscrit.contains(part)){
+                    lesTablesEtu.get(numeroTable).remove(part);
+                }
+                lesTablesPerso.get(numeroTable).remove(part);
+            }
+            throw new PlusDeTempsException();
+        }
+        throw new PasDeReservation();
     }
 
 
