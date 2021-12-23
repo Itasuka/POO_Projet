@@ -16,8 +16,8 @@ public class Gala {
     private static int nbTotalTablesPersonnel = 10;
     private static int nbPlacesTotalesDispoEtu = nbTotalTablesEtudiant * 8;
     private static int nbPlacesTotalesDispoPerso = nbTotalTablesPersonnel * 8;
-    private SortedSet<Etudiant> lesEtudiants = new TreeSet<>();
-    private SortedSet<Personnel> lePersonnel = new TreeSet<>();
+    public SortedSet<Etudiant> lesEtudiants = new TreeSet<>();
+    public SortedSet<Personnel> lePersonnel = new TreeSet<>();
     private SortedSet<Etudiant> lesEtudiantsInscrit = new TreeSet<>();
     private SortedSet<Personnel> lePersonnelInscrit = new TreeSet<>();
     private PriorityQueue<Etudiant> etudiantDemandeAttente = new PriorityQueue<Etudiant>(taillepqueue, new Comparator<Etudiant>() {
@@ -208,6 +208,39 @@ public class Gala {
         return res;
     }
 
+    public Etudiant etuExiste(int numero){
+        for(Etudiant etu : lesEtudiants){
+            if(etu.getNumero()==numero){
+                return etu;
+            }
+        }
+        return null;
+    }
+    public Personnel persExiste(int numero){
+        for(Personnel pers : lePersonnel){
+            if(pers.getNumero()==numero){
+                return pers;
+            }
+        }
+        return null;
+    }
+
+    public boolean etuInscrit(int numero){
+        for(Etudiant etu : lesEtudiantsInscrit){
+            if(etu.getNumero()==numero){
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean persInscrit(int numero){
+        for(Personnel pers : lePersonnelInscrit){
+            if(pers.getNumero()==numero){
+                return true;
+            }
+        }
+        return false;
+    }
 
     //Cette classe et son itérateur implémentent toutes les méthodes optionnelles des interfaces Collectionet Iterator.
     // L'itérateur fourni dans la méthode iterator()n'est pas garanti pour parcourir les éléments de la file d'attente prioritaire dans un ordre particulier. Si vous avez besoin d'un parcours ordonné, envisagez d'utiliser Arrays.sort(pq.toArray()).
