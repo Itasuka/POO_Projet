@@ -33,7 +33,7 @@ public class Controleur {
                                 boolean flag4=true;
                                 while(flag4){
                                     //Gestion diner (à suivre)
-                                    int menu=menuGestion();
+                                    int menu=leIhm.menuGestion();
                                     if(menu==1){
                                         //Gros pavé d'en dessous
                                     }
@@ -52,7 +52,7 @@ public class Controleur {
                                 }
                             }
                             else{
-                                int iOuQ=inscriptionOuQuitter();
+                                int iOuQ=leIhm.inscriptionOuQuitter();
                                 if(iOuQ==1){
                                     leGala.inscriptionPersonnel(numero, pers.getNom(), pers.getPrenom(), pers.getTel(), pers.getEmail());
                                 }
@@ -85,7 +85,7 @@ public class Controleur {
                                 boolean flag4=true;
                                 while(flag4){
                                     //Gestion diner (à suivre)
-                                    int menu=menuGestion();
+                                    int menu=leIhm.menuGestion();
                                     if(menu==1){
                                         //Gros pavé d'en dessous
                                     }
@@ -103,7 +103,7 @@ public class Controleur {
                                     }
                                 }
                             }else{
-                                int iOuQ=inscriptionOuQuitter();
+                                int iOuQ=leIhm.inscriptionOuQuitter();
                                 if(iOuQ==1){
                                     leGala.inscriptionEtudiant(numero, etu.getNom(), etu.getPrenom(), etu.getTel(), etu.getEmail(),etu.getAnnee());
                                 }
