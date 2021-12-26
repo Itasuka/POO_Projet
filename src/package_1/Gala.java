@@ -143,22 +143,21 @@ public class Gala {
             lePersonnelInscrit.remove(part);
         }
         throw new PasInscritException();
-
     }
 
-    public Table trouverUneTable(Particulier p, int nombreplaces) {
+    public int trouverUneTable(Particulier p, int nombreplaces) {
         if (lesEtudiants.contains(p)) {
             Set<Table> settableetu = lesTablesEtu.keySet();
             for (Table t : settableetu) {
                 if (t.getNombrePlacesLibres() >= nombreplaces) {
-                    return t;
+                    return t.getNumTable();
                 }
             }
         } else {
             Set<Table> settableperso = lesTablesPerso.keySet();
             for (Table t : settableperso) {
                 if (t.getNombrePlacesLibres() >= nombreplaces) {
-                    return t;
+                    return t.getNumTable();
                 }
             }
         }

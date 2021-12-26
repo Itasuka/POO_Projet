@@ -167,7 +167,7 @@ public class Controleur {
                                                             }
                                                         }
                                                     }if(plan==0){
-                                                        int table = leGala.trouverUneTable(etu,leGala.getLesReservations().get(etu).getNombrePlaces());
+                                                        int table = leGala.trouverUneTable(etu, leGala.getLesReservations().get(etu).getNombrePlaces());
                                                         leGala.confirmerReservation(etu,leGala.getLesReservations().get(etu),table);
                                                         System.out.println("Réservation confirmée, FIN");
                                                         flag5 = false;
@@ -188,7 +188,7 @@ public class Controleur {
                                         }
                                         //Gros pavé d'en dessous
                                         else {
-                                            leGala.afficherNbPlacesPossible(pers);
+                                            leGala.afficherNbPlacesPossible(etu);
                                             boolean flag5 = true;
                                             while (flag5) {
                                                 int nbPlaces = leIhm.choixPlaces();

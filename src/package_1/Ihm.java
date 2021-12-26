@@ -52,11 +52,11 @@ public class Ihm {
 
     public int consulterPlanTable() {
         while (true) {
-            System.out.println("Voulez-vous consulter le plan de table ? Entrez 1 pour oui ou 2 pour non");
+            System.out.println("Voulez-vous consulter le plan de table ? Entrez 1 pour oui ou 0 pour non");
             if (scan.hasNextInt()) {
                 return scan.nextInt();
             } else {
-                System.out.println("/!\\ Veuillez rentrer 1 pour oui ou 2 pour non /!\\");
+                System.out.println("/!\\ Veuillez rentrer 1 pour oui ou 0 pour non /!\\");
             }
         }
     }
