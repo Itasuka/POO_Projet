@@ -33,7 +33,6 @@ public class Gala {
             return lesReservations.get(e1).getDateReservation().compareTo(lesReservations.get(e2).getDateReservation());
         }
     });
-
     private SortedSet<Etudiant> etudiantDemandeAcceptee = new TreeSet<>();
     private SortedMap<Particulier, Reservation> lesReservations = new TreeMap<>();
     private SortedMap<Table, ArrayList<Etudiant>> lesTablesEtu = new TreeMap<>();
@@ -42,7 +41,7 @@ public class Gala {
     private static SortedSet<Table> lesTables = new TreeSet<>();
 
     public Gala(LocalDate date) throws FileNotFoundException {
-        this.DATE=date;
+        this.DATE = date;
 
         Scanner sc = new Scanner(new File("src\\etudiants.txt"));
         while (sc.hasNextLine()) {
@@ -112,24 +111,45 @@ public class Gala {
     }
 
     public void desincrire(Particulier part) {
-        if (lesReservations.get(part)!=null){
+        if (lesReservations.get(part) != null) {
             supprimerReservation(part);
         }
-        if (lesEtudiantsInscrit.contains(part)){
+        if (lesEtudiantsInscrit.contains(part)) {
             lesEtudiantsInscrit.remove(part);
         }
-        if (lePersonnelInscrit.contains(part)){
+        if (lePersonnelInscrit.contains(part)) {
             lePersonnelInscrit.remove(part);
         }
         throw new PasInscritException();
 
     }
 
+    public Table trouverUneTable(Particulier p, int nombreplaces) {
+        if (lesEtudiants.contains(p)) {
+            Set<Table> settableetu = lesTablesEtu.keySet();
+            for (Table t : settableetu) {
+                if (t.getNombrePlacesLibres() >= nombreplaces) {
+                    return t;
+                }
+            }
+        } else {
+            Set<Table> settableperso = lesTablesPerso.keySet();
+            for (Table t : settableperso) {
+                if (t.getNombrePlacesLibres() >= nombreplaces) {
+                    return t;
+                }
+            }
+        }
+        throw new PlusDePlaceDispoException();
+    }
 
     public boolean creerReservation(Etudiant e, int nombrePlaces) {
         if (!lesReservations.containsKey(e)) {
             if (e.getAnnee() == 5 && nombrePlaces <= 4 && nombrePlaces >= 1 || e.getAnnee() < 5 && nombrePlaces <= 2 && nombrePlaces >= 1) {
                 lesReservations.put(e, new Reservation(nombrePlaces));
+                if (taillepqueue==etudiantDemandeAttente.size()){
+                    taillepqueue*=2;
+                }
                 etudiantDemandeAttente.add(e);
                 return true;
             }
@@ -175,12 +195,12 @@ public class Gala {
         return false;
     }
 
-    public void supprimerReservation(Particulier part){
-        if (lesReservations.get(part)!=null){
+    public void supprimerReservation(Particulier part) {
+        if (lesReservations.get(part) != null) {
             int numeroTable = lesReservations.get(part).getNumeroTable();
             LocalDate dateReserv = lesReservations.get(part).getDateReservation();
-            if (ChronoUnit.DAYS.between(dateReserv,DATE)>=10){
-                if (lesEtudiantsInscrit.contains(part)){
+            if (ChronoUnit.DAYS.between(dateReserv, DATE) >= 10) {
+                if (lesEtudiantsInscrit.contains(part)) {
                     lesTablesEtu.get(numeroTable).remove(part);
                 }
                 lesTablesPerso.get(numeroTable).remove(part);
@@ -191,58 +211,136 @@ public class Gala {
     }
 
 
-
     public String afficherPlanTable(SortedMap<Table, ArrayList<Particulier>> planTable) {
         String res = "";
         for (Table table : planTable.keySet()) {
             res += "Table numéro " + table.getNumTable() + " { ";
             for (Particulier part : planTable.get(table)) {
-                int nbaccompagnant = lesReservations.get(part).getNombrePlaces()-1;
+                int nbaccompagnant = lesReservations.get(part).getNombrePlaces() - 1;
                 res += part.getNom() + " " + part.getPrenom() + ", " + nbaccompagnant + " accompagnant";
-                if (nbaccompagnant>1){
-                    res+="s";
+                if (nbaccompagnant > 1) {
+                    res += "s";
                 }
             }
-            res+="Nombre de place restantes : "+ table.getNombrePlacesLibres()+"\n";
+            res += "Nombre de place restantes : " + table.getNombrePlacesLibres() + "\n";
         }
         return res;
     }
 
-    public Etudiant etuExiste(int numero){
-        for(Etudiant etu : lesEtudiants){
-            if(etu.getNumero()==numero){
+    public int nbPlacesPossible(Particulier p) {
+        if (lesEtudiants.contains(p)) {
+            Etudiant e = (Etudiant) p;
+            Set<Table> settableetu = lesTablesEtu.keySet();
+            if (e.getAnnee() == 5) {
+                int nb = 4;
+                int nbp = 0;
+                for (Table t : settableetu) {
+                    if (t.getNombrePlacesLibres() > nbp) {
+                        nbp = t.getNombrePlacesLibres();
+                    }
+                }
+                if (nb < nbp) {
+                    return nb;
+                } else {
+                    return nbp;
+                }
+            } else {
+                int nb = 2;
+                int nbp = 0;
+                for (Table t : settableetu) {
+                    if (t.getNombrePlacesLibres() > nbp) {
+                        nbp = t.getNombrePlacesLibres();
+                    }
+                }
+                if (nb < nbp) {
+                    return nb;
+                } else {
+                    return nbp;
+                }
+            }
+        } else {
+            Set<Table> settableperso = lesTablesPerso.keySet();
+            int nb = 2;
+            int nbp = 0;
+            for (Table t : settableperso) {
+                if (t.getNombrePlacesLibres() > nbp) {
+                    nbp = t.getNombrePlacesLibres();
+                }
+            }
+            if (nb < nbp) {
+                return nb;
+            } else {
+                return nbp;
+            }
+        }
+    }
+
+    public String afficherNbPlacesPossible(Particulier p) {
+        int nb = nbPlacesPossible(p);
+        String s = "Vous pouvez reserver " + nb + " places maximum.";
+        return s;
+    }
+
+    public Etudiant etuExiste(int numero) {
+        for (Etudiant etu : lesEtudiants) {
+            if (etu.getNumero() == numero) {
                 return etu;
             }
         }
         return null;
     }
-    public Personnel persExiste(int numero){
-        for(Personnel pers : lePersonnel){
-            if(pers.getNumero()==numero){
+
+    public Personnel persExiste(int numero) {
+        for (Personnel pers : lePersonnel) {
+            if (pers.getNumero() == numero) {
                 return pers;
             }
         }
         return null;
     }
 
-    public boolean etuInscrit(int numero){
-        for(Etudiant etu : lesEtudiantsInscrit){
-            if(etu.getNumero()==numero){
-                return true;
-            }
-        }
-        return false;
-    }
-    public boolean persInscrit(int numero){
-        for(Personnel pers : lePersonnelInscrit){
-            if(pers.getNumero()==numero){
+    public boolean etuInscrit(int numero) {
+        for (Etudiant etu : lesEtudiantsInscrit) {
+            if (etu.getNumero() == numero) {
                 return true;
             }
         }
         return false;
     }
 
-    //Cette classe et son itérateur implémentent toutes les méthodes optionnelles des interfaces Collectionet Iterator.
-    // L'itérateur fourni dans la méthode iterator()n'est pas garanti pour parcourir les éléments de la file d'attente prioritaire dans un ordre particulier. Si vous avez besoin d'un parcours ordonné, envisagez d'utiliser Arrays.sort(pq.toArray()).
+    public boolean persInscrit(int numero) {
+        for (Personnel pers : lePersonnelInscrit) {
+            if (pers.getNumero() == numero) {
+                return true;
+            }
+        }
+        return false;
+    }
 
+    public void avancerLaQueue() {
+        int nbplaces = nbPlacesTotalesDispoEtu;
+        boolean drap = true;
+        Set<Map.Entry<Particulier, Reservation>> set = lesReservations.entrySet();
+        if (!etudiantDemandeAttente.isEmpty()) {
+            while (drap) {
+                Etudiant etudiant = etudiantDemandeAttente.peek();
+                for (Map.Entry<Particulier, Reservation> entree : set) {
+                    if (lesEtudiants.contains(entree.getKey())) {
+                        Etudiant e = (Etudiant) entree.getKey();
+                        if (etudiant.equals(e)) {
+                            int nbplacesdemandees = entree.getValue().getNombrePlaces();
+                            if (nbplaces - nbplacesdemandees >= 0) {
+                                etudiantDemandeAcceptee.add(etudiant);
+                                etudiantDemandeAttente.poll();
+                            }
+                            else{
+                                drap=false;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
