@@ -8,7 +8,7 @@ import java.util.*;
 
 public class Gala {
     private final LocalDate DATE;
-    private static int taillepqueue = 400; //taille initiale de la priority queue qu'on double lors d'ajout si nécessaire
+    private static int taillepqueue = 200; //taille initiale de la priority queue qu'on double lors d'ajout si nécessaire
     private static double tarif1 = 10.0;
     private static double tarif2 = 15.0;
     private static double tarif3 = 20.0;
@@ -35,11 +35,33 @@ public class Gala {
     });
 
     private SortedSet<Etudiant> etudiantDemandeAcceptee = new TreeSet<>();
+
+    public SortedMap<Particulier, Reservation> getLesReservations() {
+        return lesReservations;
+    }
+
     private SortedMap<Particulier, Reservation> lesReservations = new TreeMap<>();
-    private SortedMap<Table, ArrayList<Etudiant>> lesTablesEtu = new TreeMap<>();
-    private SortedMap<Table, ArrayList<Personnel>> lesTablesPerso = new TreeMap<>();
+    private SortedMap<Table, ArrayList<Particulier>> lesTablesEtu = new TreeMap<>();
+    private SortedMap<Table, ArrayList<Particulier>> lesTablesPerso = new TreeMap<>();
 
     private static SortedSet<Table> lesTables = new TreeSet<>();
+
+    public PriorityQueue<Etudiant> getEtudiantDemandeAttente() {
+        return etudiantDemandeAttente;
+    }
+
+    public SortedSet<Etudiant> getEtudiantDemandeAcceptee() {
+        return etudiantDemandeAcceptee;
+    }
+
+
+    public SortedMap<Table, ArrayList<Particulier>> getLesTablesEtu() {
+        return lesTablesEtu;
+    }
+
+    public SortedMap<Table, ArrayList<Particulier>> getLesTablesPerso() {
+        return lesTablesPerso;
+    }
 
     public Gala(LocalDate date) throws FileNotFoundException {
         this.DATE=date;
