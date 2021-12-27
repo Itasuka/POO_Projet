@@ -1,6 +1,8 @@
 package package_1;
 
-public class PasInscritException extends IllegalArgumentException {
+import java.io.Serializable;
+
+public class PasInscritException extends IllegalArgumentException implements Serializable {
     public PasInscritException(){
         super("Vous n'ètes pas inscrit");
     }

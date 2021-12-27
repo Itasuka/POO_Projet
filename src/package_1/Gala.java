@@ -2,25 +2,29 @@ package package_1;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-public class Gala {
-    private final LocalDate DATE;
+public class Gala implements Serializable {
+    private final int ANNEE;
+    private final int MOIS;
+    private final int JOUR;
     private static int taillepqueue = 200; //taille initiale de la priority queue qu'on double lors d'ajout si nécessaire
     private static double tarif1 = 10.0;
     private static double tarif2 = 15.0;
     private static double tarif3 = 20.0;
-    private static int nbTotalTablesEtudiant = 15;
-    private static int nbTotalTablesPersonnel = 10;
-    private static int nbPlacesTotalesDispoEtu = nbTotalTablesEtudiant * 8;
-    private static int nbPlacesTotalesDispoPerso = nbTotalTablesPersonnel * 8;
+    private static final int nbTotalTablesEtudiant = 15;
+    private static final int nbTotalTablesPersonnel = 10;
+    private static final int nbPlacesTotalesDispoEtu = nbTotalTablesEtudiant * 8;
+    private static final int nbPlacesTotalesDispoPerso = nbTotalTablesPersonnel * 8;
     public SortedSet<Etudiant> lesEtudiants = new TreeSet<>();
     public SortedSet<Personnel> lePersonnel = new TreeSet<>();
     private SortedSet<Etudiant> lesEtudiantsInscrit = new TreeSet<>();
     private SortedSet<Personnel> lePersonnelInscrit = new TreeSet<>();
-    private PriorityQueue<Etudiant> etudiantDemandeAttente = new PriorityQueue<Etudiant>(taillepqueue, new Comparator<Etudiant>() {
+    private SortedSet<Etudiant> etudiantDemande = new TreeSet<>();
+    private PriorityQueue<Etudiant> etudiantDemandeAttente = new PriorityQueue<>(taillepqueue, new Comparator<>() {
         @Override
         public int compare(Etudiant e1, Etudiant e2) {
             if (e1.getAnnee() == 5 && e2.getAnnee() != 5) {
@@ -43,11 +47,7 @@ public class Gala {
     private SortedMap<Table, ArrayList<Particulier>> lesTablesEtu = new TreeMap<>();
     private SortedMap<Table, ArrayList<Particulier>> lesTablesPerso = new TreeMap<>();
 
-    private static SortedSet<Table> lesTables = new TreeSet<>();
-
-    public PriorityQueue<Etudiant> getEtudiantDemandeAttente() {
-        return etudiantDemandeAttente;
-    }
+    public PriorityQueue<Etudiant> getEtudiantDemandeAttente() { return etudiantDemandeAttente; }
 
     public SortedSet<Etudiant> getEtudiantDemandeAcceptee() {
         return etudiantDemandeAcceptee;
@@ -63,7 +63,10 @@ public class Gala {
     }
 
     public Gala(LocalDate date) throws FileNotFoundException {
-        this.DATE = date;
+
+        this.ANNEE = date.getYear();
+        this.MOIS = date.getMonthValue();
+        this.JOUR = date.getDayOfMonth();
 
         Scanner sc = new Scanner(new File("src\\etudiants.txt"));
         while (sc.hasNextLine()) {
@@ -136,13 +139,15 @@ public class Gala {
         if (lesReservations.get(part) != null) {
             supprimerReservation(part);
         }
-        if (lesEtudiantsInscrit.contains(part)) {
+        else if (lesEtudiantsInscrit.contains(part)) {
             lesEtudiantsInscrit.remove(part);
         }
-        if (lePersonnelInscrit.contains(part)) {
+        else if (lePersonnelInscrit.contains(part)) {
             lePersonnelInscrit.remove(part);
         }
-        throw new PasInscritException();
+        else {
+            throw new PasInscritException();
+        }
     }
 
     public int trouverUneTable(Particulier p, int nombreplaces) {
@@ -153,7 +158,7 @@ public class Gala {
                     return t.getNumTable();
                 }
             }
-        } else {
+        } else if (lePersonnel.contains(p)) {
             Set<Table> settableperso = lesTablesPerso.keySet();
             for (Table t : settableperso) {
                 if (t.getNombrePlacesLibres() >= nombreplaces) {
@@ -181,8 +186,11 @@ public class Gala {
 
     //Pour les Etudiants
     //Avant appel vérifier s'il est dans la map étudiants accepté
-    public boolean confirmerReservation(Etudiant e, Reservation reserv, int numeroTable) {
-        for (Table table : lesTables) {
+    public boolean confirmerReservation(Etudiant e, Reservation reserv, int numeroTable) throws MauvaiseTableException {
+        if (numeroTable<11 || numeroTable>25){
+            throw new MauvaiseTableException();
+        }
+        for (Table table : lesTablesEtu.keySet()) {
             if (table.getNumTable() == numeroTable && table.getNombrePlacesLibres() >= reserv.getNombrePlaces()) {
                 double montant = calculMontant(e, reserv.getNombrePlaces());
                 lesReservations.replace(e, reserv, new Reservation(reserv, montant, numeroTable));
@@ -197,10 +205,13 @@ public class Gala {
     }
 
     //Pour le Personnel (pas de réserv préalable)
-    public boolean creerReservation(Personnel pers, int nombrePlaces, int numeroTable) {
+    public boolean creerReservation(Personnel pers, int nombrePlaces, int numeroTable) throws MauvaiseTableException {
         if (!lesReservations.containsKey(pers)) {
+            if (numeroTable<0 || numeroTable>10){
+                throw new MauvaiseTableException();
+            }
             if (nombrePlaces <= 2 && nombrePlaces > 0) {
-                for (Table table : lesTables) {
+                for (Table table : lesTablesPerso.keySet()) {
                     if (table.getNumTable() == numeroTable && table.getNombrePlacesLibres() >= nombrePlaces) {
                         double montant = calculMontant(pers, nombrePlaces);
                         lesReservations.put(pers, new Reservation(new Reservation(nombrePlaces), montant, numeroTable));
@@ -208,7 +219,9 @@ public class Gala {
                         table.supprimerPlaces(table.getNumTable(), nombrePlaces);
                         return true;
                     }
-                    throw new PlusDePlaceDispoException();
+                    else if (table.getNumTable() == numeroTable && table.getNombrePlacesLibres() < nombrePlaces){
+                        throw new PlusDePlaceDispoException();
+                    }
                 }
             }
             throw new MauvaisNombrePlaceException();
@@ -219,12 +232,20 @@ public class Gala {
     public void supprimerReservation(Particulier part) {
         if (lesReservations.get(part) != null) {
             int numeroTable = lesReservations.get(part).getNumeroTable();
-            LocalDate dateReserv = lesReservations.get(part).getDateReservation();
-            if (ChronoUnit.DAYS.between(dateReserv, DATE) >= 10) {
+            long nbJAvGala = ChronoUnit.DAYS.between(LocalDate.now(), LocalDate.of(ANNEE,MOIS,JOUR));
+            if (nbJAvGala >= 10) {
                 if (lesEtudiantsInscrit.contains(part)) {
-                    lesTablesEtu.get(numeroTable).remove(part);
+                    for (Table table : lesTablesEtu.keySet()){
+                        if (table.getNumTable()==numeroTable){
+                            lesTablesEtu.get(table).remove(part);
+                        }
+                    }
                 }
-                lesTablesPerso.get(numeroTable).remove(part);
+                for (Table table : lesTablesPerso.keySet()){
+                    if (table.getNumTable()==numeroTable){
+                        lesTablesPerso.get(table).remove(part);
+                    }
+                }
             }
             throw new PlusDeTempsException();
         }

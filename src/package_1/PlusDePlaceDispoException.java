@@ -1,6 +1,8 @@
 package package_1;
 
-public class PlusDePlaceDispoException extends IllegalArgumentException {
+import java.io.Serializable;
+
+public class PlusDePlaceDispoException extends IllegalArgumentException implements Serializable {
     public PlusDePlaceDispoException(){
         super("Il n'y a plus de places");
     }

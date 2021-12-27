@@ -1,6 +1,8 @@
 package package_1;
 
-public abstract class Particulier implements Comparable<Particulier>{
+import java.io.Serializable;
+
+public abstract class Particulier implements Comparable<Particulier>, Serializable {
     private final int numero;
     private final String nom;
     private final String prenom;
