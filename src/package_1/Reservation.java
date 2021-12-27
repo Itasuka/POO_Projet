@@ -9,7 +9,7 @@ public class Reservation implements Serializable {
     private int nombrePlaces;
     private double montantReservation;
 
-    /** CONSTRUCTEUR POUR RESERVATION SIMPLE
+    /** CONSTRUCTEUR POUR PREMIER RESERVATION DES ETUDIANTS
      *
      * @param nombrePlaces
      */
@@ -18,7 +18,7 @@ public class Reservation implements Serializable {
         this.nombrePlaces=nombrePlaces;
     }
 
-    /** CONSTRUCTEUR DE CONFIRMER RESERVATION
+    /** CONSTRUCTEUR POUR FINALISER LA RESERVATION
      *
      * @param r
      * @param montant
@@ -29,6 +29,15 @@ public class Reservation implements Serializable {
         this.nombrePlaces=r.nombrePlaces;
         this.montantReservation=montant;
         this.numeroTable=numeroTable;
+    }
+
+    /**
+     *
+     * @return l'état d'une réservation sous la forme d'un String
+     */
+    public String toString(){
+        String s = "faite le "+dateReservation+", table n°"+numeroTable+" pour "+nombrePlaces+" personne(s) s'élevant à un montant de "+montantReservation+"€";
+        return s;
     }
 
     public LocalDate getDateReservation() {

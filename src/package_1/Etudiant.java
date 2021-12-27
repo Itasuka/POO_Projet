@@ -11,12 +11,17 @@ public class Etudiant extends Particulier implements Serializable {
     }
 
     public int getAnnee(){return annee;}
+
     public int getTarif() {
         if (annee == 5) {
             return 1;
         }return 2;
     }
 
+    /** description de la fonction <b>toString</b>
+     * donne les informations de l'étudiant
+     * @return les informations de l'étudiant
+     */
     @Override
     public String toString(){
         return super.toString()+this.annee;
