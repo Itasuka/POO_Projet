@@ -40,9 +40,14 @@ public abstract class Particulier implements Comparable<Particulier>{
         return email;
     }
 
+    /**
+     *
+     * @return l'état d'un particulier sous la forme d'un String
+     */
     @Override
     public String toString(){
-        return this.numero+this.nom+this.prenom+this.tel+this.email;
+        String s="";
+        return s+=this.numero+" "+this.nom+" "+this.prenom+" "+this.tel+" "+this.email;
     }
 
 }

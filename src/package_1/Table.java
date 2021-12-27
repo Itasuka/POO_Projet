@@ -30,4 +30,13 @@ public class Table {
     public int getNumTable() {
         return numTable;
     }
+
+    /**
+     *
+     * @return l'état d'une table sous la forme d'un String
+     */
+    public String toString(){
+        String s = "Table n°"+numTable+" ayant "+nombrePlacesLibres+" places libres";
+        return s;
+    }
 }

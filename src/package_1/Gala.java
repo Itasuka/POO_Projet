@@ -43,7 +43,61 @@ public class Gala {
     private SortedMap<Table, ArrayList<Particulier>> lesTablesEtu = new TreeMap<>();
     private SortedMap<Table, ArrayList<Particulier>> lesTablesPerso = new TreeMap<>();
 
-    private static SortedSet<Table> lesTables = new TreeSet<>();
+    /**
+     *
+     * @return l'état des conteneurs de Gala sont forme de String.
+     */
+    public String toString() {
+        String s = "ETAT DU GALA AYANT LIEU LE "+DATE+" : \n";
+        s += "--------------------LISTE DES ETUDIANTS POUVANT S'INSCRIRE :--------------------\n";
+        for (Etudiant etudiantexistant : lesEtudiants) {
+            s += etudiantexistant.toString() + "\n";
+        }
+        s += "--------------------LISTE DU PERSONNEL POUVANT S'INSCRIRE :--------------------\n";
+        for (Personnel personnelexistant : lePersonnel){
+            s += personnelexistant.toString() + "\n";
+        }
+        s += "--------------------LISTE DES ETUDIANTS INSCRITS AU GALA :--------------------\n";
+        for (Etudiant etudiantinscrit : lesEtudiantsInscrit){
+            s += etudiantinscrit.toString() + "\n";
+        }
+        s+= "--------------------LISTE DU PERSONNEL INSCRIT AU GALA :--------------------\n";
+        for (Personnel personnelinscrit : lePersonnelInscrit){
+            s += personnelinscrit.toString() + "\n";
+        }
+        s+="--------------------LISTE DES ETUDIANTS DANS LA FILE D'ATTENTE :--------------------\n";
+        s+=etudiantDemandeAttente.toString();
+        s+="--------------------LISTE DES ETUDIANTS DONT LA DEMANDE A ETE ACCEPTEE :--------------------\n [";
+        String sep="";
+        for (Etudiant etudiantinscrit : lesEtudiantsInscrit){
+            s += sep + etudiantinscrit.toString();
+            sep=",";
+        }
+        s+="]";
+        s+="--------------------LISTE DES RESERVATIONS :--------------------\n";
+        Set<Map.Entry<Particulier,Reservation>> setreservations = lesReservations.entrySet();
+        for (Map.Entry<Particulier,Reservation> entree : setreservations){
+            s+= entree.getKey().toString() +" à la réservation suivante : "+ entree.getValue().toString()+"\n";
+        }
+        s+="--------------------LISTE DES TABLES POUR ETUDIANTS ET LEUR(S) OCCUPANT(S) :--------------------\n";
+        Set<Map.Entry<Table, ArrayList<Particulier>>> settablesetu = lesTablesEtu.entrySet();
+        for (Map.Entry<Table, ArrayList<Particulier>> entree : settablesetu){
+            s+= entree.getKey().toString()+" : ";
+            for (Particulier p : entree.getValue()){
+                s+= p.toString()+"\n";
+            }
+        }
+        s+="--------------------LISTE DES TABLES POUR LE PERSONNEL ET LEUR(S) OCCUPANT(S) :--------------------\n";
+        Set<Map.Entry<Table, ArrayList<Particulier>>> settablesperso = lesTablesPerso.entrySet();
+        for (Map.Entry<Table, ArrayList<Particulier>> entree : settablesperso){
+            s+= entree.getKey().toString()+" : ";
+            for (Particulier p : entree.getValue()){
+                s+= p.toString()+"\n";
+            }
+        }
+        s+="--------------------FIN DE L'ETAT DU GALA--------------------";
+        return s;
+    }
 
     public PriorityQueue<Etudiant> getEtudiantDemandeAttente() {
         return etudiantDemandeAttente;
@@ -168,8 +222,8 @@ public class Gala {
         if (!lesReservations.containsKey(e)) {
             if (e.getAnnee() == 5 && nombrePlaces <= 4 && nombrePlaces >= 1 || e.getAnnee() < 5 && nombrePlaces <= 2 && nombrePlaces >= 1) {
                 lesReservations.put(e, new Reservation(nombrePlaces));
-                if (taillepqueue==etudiantDemandeAttente.size()){
-                    taillepqueue*=2;
+                if (taillepqueue == etudiantDemandeAttente.size()) {
+                    taillepqueue *= 2;
                 }
                 etudiantDemandeAttente.add(e);
                 return true;
@@ -182,7 +236,7 @@ public class Gala {
     //Pour les Etudiants
     //Avant appel vérifier s'il est dans la map étudiants accepté
     public boolean confirmerReservation(Etudiant e, Reservation reserv, int numeroTable) {
-        for (Table table : lesTables) {
+        for (Table table : lesTablesEtu.keySet()) {
             if (table.getNumTable() == numeroTable && table.getNombrePlacesLibres() >= reserv.getNombrePlaces()) {
                 double montant = calculMontant(e, reserv.getNombrePlaces());
                 lesReservations.replace(e, reserv, new Reservation(reserv, montant, numeroTable));
@@ -200,7 +254,7 @@ public class Gala {
     public boolean creerReservation(Personnel pers, int nombrePlaces, int numeroTable) {
         if (!lesReservations.containsKey(pers)) {
             if (nombrePlaces <= 2 && nombrePlaces > 0) {
-                for (Table table : lesTables) {
+                for (Table table : lesTablesPerso.keySet()) {
                     if (table.getNumTable() == numeroTable && table.getNombrePlacesLibres() >= nombrePlaces) {
                         double montant = calculMontant(pers, nombrePlaces);
                         lesReservations.put(pers, new Reservation(new Reservation(nombrePlaces), montant, numeroTable));
@@ -353,9 +407,8 @@ public class Gala {
                             if (nbplaces - nbplacesdemandees >= 0) {
                                 etudiantDemandeAcceptee.add(etudiant);
                                 etudiantDemandeAttente.poll();
-                            }
-                            else{
-                                drap=false;
+                            } else {
+                                drap = false;
                                 break;
                             }
                         }

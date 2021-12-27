@@ -15,9 +15,13 @@ public class Etudiant extends Particulier {
         }return 2;
     }
 
+    /**
+     *
+     * @return l'état d'un étudiant sous la forme d'un String
+     */
     @Override
     public String toString(){
-        return super.toString()+this.annee;
+        return super.toString()+" "+this.annee;
     }
 
 }

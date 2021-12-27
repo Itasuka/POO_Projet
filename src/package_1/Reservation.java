@@ -30,6 +30,15 @@ public class Reservation {
         this.numeroTable=numeroTable;
     }
 
+    /**
+     *
+     * @return l'état d'une réservation sous la forme d'un String
+     */
+    public String toString(){
+        String s = "faite le "+dateReservation+", table n°"+numeroTable+" pour "+nombrePlaces+" personne(s) s'élevant à un montant de "+montantReservation+"€";
+        return s;
+    }
+
     public LocalDate getDateReservation() {
         return dateReservation;
     }
