@@ -24,19 +24,7 @@ public class Gala implements Serializable {
     private SortedSet<Etudiant> lesEtudiantsInscrit = new TreeSet<>();
     private SortedSet<Personnel> lePersonnelInscrit = new TreeSet<>();
     private SortedSet<Etudiant> etudiantDemande = new TreeSet<>();
-    private PriorityQueue<Etudiant> etudiantDemandeAttente = new PriorityQueue<>(taillepqueue, new Comparator<>() {
-        @Override
-        public int compare(Etudiant e1, Etudiant e2) {
-            if (e1.getAnnee() == 5 && e2.getAnnee() != 5) {
-                return -1;
-            }
-            if (e1.getAnnee() != 5 && e2.getAnnee() == 5) {
-                return 1;
-            }
-            //if (e1.getAnnee()==5 && e2.getAnnee()==5 || e1.getAnnee()!=5 && e2.getAnnee()!=5)
-            return lesReservations.get(e1).getDateReservation().compareTo(lesReservations.get(e2).getDateReservation());
-        }
-    });
+    private PriorityQueue<Etudiant> etudiantDemandeAttente = new PriorityQueue<>(taillepqueue, new Comparaison());
     private SortedSet<Etudiant> etudiantDemandeAcceptee = new TreeSet<>();
 
     public SortedMap<Particulier, Reservation> getLesReservations() {
@@ -63,6 +51,21 @@ public class Gala implements Serializable {
     }
     //-----------------------------------------------------------------
 
+    class Comparaison implements Comparator<Etudiant>,Serializable{
+        @Override
+        public int compare(Etudiant e1, Etudiant e2) {
+            if (e1.getAnnee() == 5 && e2.getAnnee() != 5) {
+                return -1;
+            }
+            if (e1.getAnnee() != 5 && e2.getAnnee() == 5) {
+                return 1;
+            }
+            //if (e1.getAnnee()==5 && e2.getAnnee()==5 || e1.getAnnee()!=5 && e2.getAnnee()!=5)
+            return lesReservations.get(e1).getDateReservation().compareTo(lesReservations.get(e2).getDateReservation());
+        }
+    }
+
+
     //--------------------------METHODES-------------------------------
 
     /** TO STRING GALA
@@ -71,7 +74,7 @@ public class Gala implements Serializable {
      */
     public String toString() {
         String s = "ETAT DU GALA AYANT LIEU LE "+JOUR+"/"+MOIS+"/"+ANNEE+" : \n";
-        s += "--------------------LISTE DES ETUDIANTS POUVANT S'INSCRIRE :--------------------\n";
+     /* s += "--------------------LISTE DES ETUDIANTS POUVANT S'INSCRIRE :--------------------\n";
         for (Etudiant etudiantexistant : lesEtudiants) {
             s += etudiantexistant.toString() + "\n";
         }
@@ -79,7 +82,7 @@ public class Gala implements Serializable {
         for (Personnel personnelexistant : lePersonnel){
             s += personnelexistant.toString() + "\n";
         }
-        s += "--------------------LISTE DES ETUDIANTS INSCRITS AU GALA :--------------------\n";
+     */ s += "--------------------LISTE DES ETUDIANTS INSCRITS AU GALA :--------------------\n";
         for (Etudiant etudiantinscrit : lesEtudiantsInscrit){
             s += etudiantinscrit.toString() + "\n";
         }
@@ -88,7 +91,7 @@ public class Gala implements Serializable {
             s += personnelinscrit.toString() + "\n";
         }
         s+="--------------------LISTE DES ETUDIANTS DANS LA FILE D'ATTENTE :--------------------\n";
-        s+=etudiantDemandeAttente.toString();
+        s+=etudiantDemande.toString();
         s+="--------------------LISTE DES ETUDIANTS DONT LA DEMANDE A ETE ACCEPTEE :--------------------\n [";
         String sep="";
         for (Etudiant etudiantinscrit : lesEtudiantsInscrit){
@@ -221,10 +224,7 @@ public class Gala implements Serializable {
      * @throw PasInscrisException() si l'étudiant n'est pas inscrit
      */
     public void desincrire(Particulier part) {
-        if (lesReservations.get(part) != null) {
-            supprimerReservation(part);
-        }
-        else if (lesEtudiantsInscrit.contains(part)) {
+        if (lesEtudiantsInscrit.contains(part)) {
             lesEtudiantsInscrit.remove(part);
         }
         else if (lePersonnelInscrit.contains(part)) {
@@ -358,24 +358,30 @@ public class Gala implements Serializable {
     public void supprimerReservation(Particulier part) {
         if (lesReservations.get(part) != null) {
             int numeroTable = lesReservations.get(part).getNumeroTable();
-            long nbJAvGala = ChronoUnit.DAYS.between(LocalDate.now(), LocalDate.of(ANNEE,MOIS,JOUR));
-            if (nbJAvGala >= 10) {
+            if (ChronoUnit.DAYS.between(LocalDate.now(), LocalDate.of(ANNEE,MOIS,JOUR)) >= 10) {
                 if (lesEtudiantsInscrit.contains(part)) {
                     for (Table table : lesTablesEtu.keySet()){
                         if (table.getNumTable()==numeroTable){
                             lesTablesEtu.get(table).remove(part);
+                            etudiantDemandeAttente.remove(part);
+                            etudiantDemandeAttente.remove(part);
+                            etudiantDemandeAcceptee.remove(part);
+                            lesReservations.remove(part);
                         }
                     }
                 }
                 for (Table table : lesTablesPerso.keySet()){
                     if (table.getNumTable()==numeroTable){
                         lesTablesPerso.get(table).remove(part);
+                        lesReservations.remove(part);
                     }
                 }
+            }else{
+                throw new PlusDeTempsException();
             }
-            throw new PlusDeTempsException();
+        }else{
+            throw new PasDeReservation();
         }
-        throw new PasDeReservation();
     }
 
 

@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 public class Controleur {
-    private int numeroEtu = 0;
     private int type = 0;
     private Gala leGala;
     private Ihm leIhm;
@@ -76,6 +75,7 @@ public class Controleur {
                                                 if (plan == 0) {
                                                     boolean flag6 = true;
                                                     while (flag6) {
+                                                        System.out.println(leGala.afficherNbPlacesPossible(pers));
                                                         int nbPlaces = leIhm.choixPlaces();
                                                         try {
                                                             leGala.creerReservation(pers, nbPlaces, leGala.trouverUneTable(pers, nbPlaces));
@@ -105,6 +105,9 @@ public class Controleur {
                                         } catch (PlusDeTempsException e) {
                                             System.out.println(e.getMessage() + ", FIN");
                                         }
+                                        flag4 = false;
+                                        flag3 = false;
+                                        flag2 = false;
                                     } else if (menu == 3) {
                                         flag4 = false;
                                         flag3 = false;
@@ -199,9 +202,9 @@ public class Controleur {
                                         }
                                         //Gros pavé d'en dessous
                                         else {
-                                            System.out.println(leGala.afficherNbPlacesPossible(etu));
                                             boolean flag5 = true;
                                             while (flag5) {
+                                                System.out.println(leGala.afficherNbPlacesPossible(etu));
                                                 int nbPlaces = leIhm.choixPlaces();
                                                 try {
                                                     leGala.creerReservation(etu, nbPlaces);
@@ -229,6 +232,9 @@ public class Controleur {
                                             } catch (PlusDeTempsException e) {
                                                 System.out.println(e.getMessage() + ", FIN");
                                         }
+                                            flag4 = false;
+                                            flag3 = false;
+                                            flag2 = false;
                                     } else if (menu == 3) {
                                         flag4 = false;
                                         flag3 = false;
