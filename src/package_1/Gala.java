@@ -98,6 +98,12 @@ public class Gala {
         }
     }
 
+    /** description de la fonction <b>calculMontant</b>
+     *Cette fonction permet de calucler le montant qu'une personne doit payer
+     * @param part
+     * @param nombrePlaces
+     * @return le montant total a payer
+     */
     public double calculMontant(Particulier part, int nombrePlaces) {
         double montant = 0;
         if (part.getTarif() == 1) {
@@ -112,7 +118,16 @@ public class Gala {
         return montant;
     }
 
-
+    /** description de la fonction <b>inscription étudiant</b>
+     * permet d'ajouter un étudiant dans la liste des étudiants inscrit
+     * @param numeroetu
+     * @param nom
+     * @param prenom
+     * @param tel
+     * @param email
+     * @param annee
+     * @return true si on peut l'inscrire et false si il n'est pas dans les étudiant enregister ou alors si il est déja inscrit
+     */
     public boolean inscriptionEtudiant(int numeroetu, String nom, String prenom, int tel, String email, int annee) {
         Etudiant etudiant = new Etudiant(numeroetu, nom, prenom, tel, email, annee);
         if (lesEtudiants.contains(etudiant) && !lesEtudiantsInscrit.contains(etudiant)) {
@@ -122,7 +137,15 @@ public class Gala {
         return false;
     }
 
-
+    /** description de la fonction <b>inscriptionPersonnel</b>
+     * permet d'ajouter un personnel dans la liste des personnels inscrit
+     * @param numero
+     * @param nom
+     * @param prenom
+     * @param tel
+     * @param email
+     * @return true si on peut l'inscrire et false si il n'est pas dans les personnels enregister ou alors si il est déja inscrit
+     */
     public boolean inscriptionPersonnel(int numero, String nom, String prenom, int tel, String email) {
         Personnel personnel = new Personnel(numero, nom, prenom, tel, email);
         if (lePersonnel.contains(personnel) && !lePersonnelInscrit.contains(personnel)) {
@@ -132,6 +155,11 @@ public class Gala {
         return false;
     }
 
+    /** description de la fonction <b>desinscrire</b>
+     *cette fonction permet de désisncrire des listes
+     * @param part
+     * @throw lance PasInscrisException()
+     */
     public void desincrire(Particulier part) {
         if (lesReservations.get(part) != null) {
             supprimerReservation(part);
@@ -145,6 +173,13 @@ public class Gala {
         throw new PasInscritException();
     }
 
+    /** description de la fonction <b>TrouverUneTable</b>
+     *
+     * @param p
+     * @param nombreplaces
+     * @return donne le numero de la table ou il y a suffisament de place de libre
+     * @throw lance PlusDePlaceDispoException()
+     */
     public int trouverUneTable(Particulier p, int nombreplaces) {
         if (lesEtudiants.contains(p)) {
             Set<Table> settableetu = lesTablesEtu.keySet();
@@ -164,6 +199,13 @@ public class Gala {
         throw new PlusDePlaceDispoException();
     }
 
+    /** description de la fonction <b>creerReservation</b>
+     * cette fonction permet de placer un étudiant dans le map des demande en attente
+     * @param e
+     * @param nombrePlaces
+     * @return true si la demande de revervation a été enregister et false sinon
+     * @throw lance MauvaisNombrePlaceException()
+     */
     public boolean creerReservation(Etudiant e, int nombrePlaces) {
         if (!lesReservations.containsKey(e)) {
             if (e.getAnnee() == 5 && nombrePlaces <= 4 && nombrePlaces >= 1 || e.getAnnee() < 5 && nombrePlaces <= 2 && nombrePlaces >= 1) {
@@ -179,6 +221,14 @@ public class Gala {
         return false;
     }
 
+    /** description de la fonction <b>confirmerReservation</b>
+     *cette fonction permet de transféré un étudiant dans le map etudiantdemandeAcceptee
+     * @param e
+     * @param reserv
+     * @param numeroTable
+     * @return true si l'étudiant est transféré dans les demandes accepté et false sinon
+     * @throw lance PlusDePlaceDispoException()
+     */
     //Pour les Etudiants
     //Avant appel vérifier s'il est dans la map étudiants accepté
     public boolean confirmerReservation(Etudiant e, Reservation reserv, int numeroTable) {
@@ -196,6 +246,15 @@ public class Gala {
         return false;
     }
 
+    /** description de la fonction <b>creerReservation</b>
+     * cette fonction permet de cree un reservation pour un personnel
+     * @param pers
+     * @param nombrePlaces
+     * @param numeroTable
+     * @return true si la reservation est créé et false sinon
+     * @throw lance PlusDePlaceDispoException()
+     * @throw lance MauvaisNombrePlaceException()
+     */
     //Pour le Personnel (pas de réserv préalable)
     public boolean creerReservation(Personnel pers, int nombrePlaces, int numeroTable) {
         if (!lesReservations.containsKey(pers)) {
@@ -216,6 +275,12 @@ public class Gala {
         return false;
     }
 
+    /** description de la fonction <b>supprimerReservation</b>
+     *cette fonction permet de supprimer la reversation d'un particulier
+     * @param part
+     * @throw lance PlusDeTempsException()
+     * @throw lance PasDeReservation()
+     */
     public void supprimerReservation(Particulier part) {
         if (lesReservations.get(part) != null) {
             int numeroTable = lesReservations.get(part).getNumeroTable();
@@ -231,6 +296,11 @@ public class Gala {
         throw new PasDeReservation();
     }
 
+    /** description de la fonction <b>afficherPlanTable</b>
+     *cette fonction permet d'afficher le plande table
+     * @param planTable
+     * @return le nombre de place reserver par table avec le nom , prenom et nombre d'accompagnant
+     */
 
     public String afficherPlanTable(SortedMap<Table, ArrayList<Particulier>> planTable) {
         String res = "";
@@ -248,6 +318,11 @@ public class Gala {
         return res;
     }
 
+    /** description de la fonction <b>nbPlacePossible</b>
+     * cette fonction donne le nombre de place possible pour les étudiants selon leur année et les personnels et les places libre
+     * @param p
+     * @return le nombre de place libre et le nombre de place disponible
+     */
     public int nbPlacesPossible(Particulier p) {
         if (lesEtudiants.contains(p)) {
             Etudiant e = (Etudiant) p;
@@ -296,12 +371,22 @@ public class Gala {
         }
     }
 
+    /** description de la fonction <b>afficherNbPlacesPossible</b>
+     * cette fonction afficher le nombre de place maximun que le particulier peut reserver
+     * @param p
+     * @return le nombre de place maximun
+     */
     public String afficherNbPlacesPossible(Particulier p) {
         int nb = nbPlacesPossible(p);
         String s = "Vous pouvez reserver " + nb + " places maximum.";
         return s;
     }
 
+    /** description de la fonction <b>etuExiste</b>
+     * cette fonction vérifie si un étudiant est dans le map lesEtudiant
+     * @param numero
+     * @return l'etudiant si il existe et sinon return null
+     */
     public Etudiant etuExiste(int numero) {
         for (Etudiant etu : lesEtudiants) {
             if (etu.getNumero() == numero) {
@@ -311,6 +396,11 @@ public class Gala {
         return null;
     }
 
+    /** description de la fonction <b>persExiste</b>
+     * cette fonction vérifie si un personnel est dans le map lesPersonnel
+     * @param numero
+     * @return le personne si c'est le cas et sinon return null
+     */
     public Personnel persExiste(int numero) {
         for (Personnel pers : lePersonnel) {
             if (pers.getNumero() == numero) {
@@ -320,6 +410,11 @@ public class Gala {
         return null;
     }
 
+    /** description de la fonction <b>etuInscrit</b>
+     * cette fonction vérifie si un étudiant est dans le map lesEtudiantInscrit
+     * @param numero
+     * @return true si il est dans la map et false dans le cas contraire
+     */
     public boolean etuInscrit(int numero) {
         for (Etudiant etu : lesEtudiantsInscrit) {
             if (etu.getNumero() == numero) {
@@ -329,6 +424,11 @@ public class Gala {
         return false;
     }
 
+    /** description de la fonction <b></b>
+     *  cette fonction vérifie si un étudiant est dans le map lePersonnelInscrit
+     * @param numero
+     * @return true si il est dans la map et false dans le cas contraire
+     */
     public boolean persInscrit(int numero) {
         for (Personnel pers : lePersonnelInscrit) {
             if (pers.getNumero() == numero) {
@@ -338,6 +438,9 @@ public class Gala {
         return false;
     }
 
+    /** description de la fonction <b>avancerLaQueue</b>
+     * cette fonction permet de faire avancer la queue quand un étudiant a sa demander accepter
+     */
     public void avancerLaQueue() {
         int nbplaces = nbPlacesTotalesDispoEtu;
         boolean drap = true;
