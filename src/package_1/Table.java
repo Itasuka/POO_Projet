@@ -15,10 +15,20 @@ public class Table {
         this.numTable=num;
     }
 
+    /** description de la fonction <b>supprimerPlaces</b>
+     * cette fonction permet de supprimer une place du nombre de place libre
+     * @param numTable
+     * @param places
+     */
     public void supprimerPlaces(int numTable, int places) {
         this.nombrePlacesLibres-=places;
     }
 
+    /** description de la fonction <b>ajouterPlaces</b>
+     * cette fonction permet d'ajouter une place au nombre de place libre
+     * @param numTable
+     * @param places
+     */
     public void ajouterPlaces(int numTable, int places) {
         this.nombrePlacesLibres+=places;
     }

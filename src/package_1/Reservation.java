@@ -8,7 +8,7 @@ public class Reservation {
     private int nombrePlaces;
     private double montantReservation;
 
-    /** CONSTRUCTEUR POUR RESERVATION SIMPLE
+    /** CONSTRUCTEUR POUR PREMIER RESERVATION DES ETUDIANTS
      *
      * @param nombrePlaces
      */
@@ -17,7 +17,7 @@ public class Reservation {
         this.nombrePlaces=nombrePlaces;
     }
 
-    /** CONSTRUCTEUR DE CONFIRMER RESERVATION
+    /** CONSTRUCTEUR POUR FINALISER LA RESERVATION
      *
      * @param r
      * @param montant

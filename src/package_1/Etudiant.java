@@ -9,19 +9,20 @@ public class Etudiant extends Particulier {
     }
 
     public int getAnnee(){return annee;}
+
     public int getTarif() {
         if (annee == 5) {
             return 1;
         }return 2;
     }
 
-    /**
-     *
-     * @return l'état d'un étudiant sous la forme d'un String
+    /** description de la fonction <b>toString</b>
+     * donne les informations de l'étudiant
+     * @return les informations de l'étudiant
      */
     @Override
     public String toString(){
-        return super.toString()+" "+this.annee;
+        return super.toString()+this.annee;
     }
 
 }
