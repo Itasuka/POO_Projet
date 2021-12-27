@@ -15,6 +15,10 @@ public class Etudiant extends Particulier {
         }return 2;
     }
 
+    /** description de la fonction <b>toString</b>
+     * donne les informations de l'étudiant
+     * @return les informations de l'étudiant
+     */
     @Override
     public String toString(){
         return super.toString()+this.annee;
