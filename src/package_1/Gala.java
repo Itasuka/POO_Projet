@@ -23,7 +23,6 @@ public class Gala implements Serializable {
     public SortedSet<Personnel> lePersonnel = new TreeSet<>();
     private SortedSet<Etudiant> lesEtudiantsInscrit = new TreeSet<>();
     private SortedSet<Personnel> lePersonnelInscrit = new TreeSet<>();
-    private SortedSet<Etudiant> etudiantDemande = new TreeSet<>();
     private PriorityQueue<Etudiant> etudiantDemandeAttente = new PriorityQueue<>(taillepqueue, new Comparaison());
     private SortedSet<Etudiant> etudiantDemandeAcceptee = new TreeSet<>();
 
@@ -74,15 +73,7 @@ public class Gala implements Serializable {
      */
     public String toString() {
         String s = "ETAT DU GALA AYANT LIEU LE "+JOUR+"/"+MOIS+"/"+ANNEE+" : \n";
-     /* s += "--------------------LISTE DES ETUDIANTS POUVANT S'INSCRIRE :--------------------\n";
-        for (Etudiant etudiantexistant : lesEtudiants) {
-            s += etudiantexistant.toString() + "\n";
-        }
-        s += "--------------------LISTE DU PERSONNEL POUVANT S'INSCRIRE :--------------------\n";
-        for (Personnel personnelexistant : lePersonnel){
-            s += personnelexistant.toString() + "\n";
-        }
-     */ s += "--------------------LISTE DES ETUDIANTS INSCRITS AU GALA :--------------------\n";
+      s += "--------------------LISTE DES ETUDIANTS INSCRITS AU GALA :--------------------\n";
         for (Etudiant etudiantinscrit : lesEtudiantsInscrit){
             s += etudiantinscrit.toString() + "\n";
         }
@@ -91,7 +82,7 @@ public class Gala implements Serializable {
             s += personnelinscrit.toString() + "\n";
         }
         s+="--------------------LISTE DES ETUDIANTS DANS LA FILE D'ATTENTE :--------------------\n";
-        s+=etudiantDemande.toString();
+        s+=etudiantDemandeAttente.toString();
         s+="--------------------LISTE DES ETUDIANTS DONT LA DEMANDE A ETE ACCEPTEE :--------------------\n [";
         String sep="";
         for (Etudiant etudiantinscrit : lesEtudiantsInscrit){
