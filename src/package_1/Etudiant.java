@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class Etudiant extends Particulier implements Serializable {
     private final int annee;
+    private Reservation reserv;
 
     public Etudiant(int numero, String nom, String prenom, int tel, String email, int annee) {
         super(numero, nom, prenom, tel, email);
@@ -16,6 +17,12 @@ public class Etudiant extends Particulier implements Serializable {
         if (annee == 5) {
             return 1;
         }return 2;
+    }
+
+    public Reservation getReserv(){ return reserv; }
+
+    public void setReserv(Reservation reservation){
+        this.reserv = reservation;
     }
 
     /** description de la fonction toString

@@ -16,6 +16,7 @@ public class Controleur {
             leGala = new Gala(dateGala);
         }
         leIhm = new Ihm();
+        leGala.avancerLaQueue();
         System.out.println(leGala);
         lancerAppli();
         System.out.println(leGala);
@@ -24,7 +25,6 @@ public class Controleur {
     }
 
     public void lancerAppli() {
-        leGala.avancerLaQueue();
         boolean flag1 = true;
         while (flag1) {
             type = leIhm.etudiantOuPersonnel();

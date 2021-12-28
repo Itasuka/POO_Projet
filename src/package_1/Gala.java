@@ -57,7 +57,7 @@ public class Gala implements Serializable {
                 return 1;
             }
             //if (e1.getAnnee()==5 && e2.getAnnee()==5 || e1.getAnnee()!=5 && e2.getAnnee()!=5)
-            return getLesReservations().get(e1).getDateReservation().compareTo(getLesReservations().get(e2).getDateReservation());
+            return e1.getReserv().getDateReservation().compareTo(e2.getReserv().getDateReservation());
 
         }
     }
@@ -275,6 +275,7 @@ public class Gala implements Serializable {
         if (!lesReservations.containsKey(e)) {
             if (e.getAnnee() == 5 && nombrePlaces <= 4 && nombrePlaces >= 1 || e.getAnnee() < 5 && nombrePlaces <= 2 && nombrePlaces >= 1) {
                 lesReservations.put(e, new Reservation(nombrePlaces, calculMontant(e, nombrePlaces)));
+                e.setReserv(new Reservation(nombrePlaces, calculMontant(e, nombrePlaces)));
                 if (taillepqueue == etudiantDemandeAttente.size()) {
                     taillepqueue *= 2;
                 }
