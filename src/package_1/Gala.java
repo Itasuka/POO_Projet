@@ -24,9 +24,9 @@ public class Gala implements Serializable {
     private Set<Personnel> lePersonnelInscrit = new HashSet<>();
     private PriorityQueue<Etudiant> etudiantDemandeAttente = new PriorityQueue<>(taillepqueue, new Comparaison());
     private Set<Etudiant> etudiantDemandeAcceptee = new HashSet<>();
-    private Map<Particulier, Reservation> lesReservations = new HashMap<>();
-    private Map<Table, ArrayList<Particulier>> lesTablesEtu = new HashMap<>();
-    private Map<Table, ArrayList<Particulier>> lesTablesPerso = new HashMap<>();
+    private SortedMap<Particulier, Reservation> lesReservations = new TreeMap<>();
+    private SortedMap<Table, ArrayList<Particulier>> lesTablesEtu = new TreeMap<>();
+    private SortedMap<Table, ArrayList<Particulier>> lesTablesPerso = new TreeMap<>();
 
     public PriorityQueue<Etudiant> getEtudiantDemandeAttente() { return etudiantDemandeAttente; }
 
@@ -34,15 +34,15 @@ public class Gala implements Serializable {
         return etudiantDemandeAcceptee;
     }
 
-    public Map<Particulier, Reservation> getLesReservations() {
+    public SortedMap<Particulier, Reservation> getLesReservations() {
         return lesReservations;
     }
 
-    public Map<Table, ArrayList<Particulier>> getLesTablesEtu() {
+    public SortedMap<Table, ArrayList<Particulier>> getLesTablesEtu() {
         return lesTablesEtu;
     }
 
-    public Map<Table, ArrayList<Particulier>> getLesTablesPerso() {
+    public SortedMap<Table, ArrayList<Particulier>> getLesTablesPerso() {
         return lesTablesPerso;
     }
     //-----------------------------------------------------------------
@@ -398,7 +398,7 @@ public class Gala implements Serializable {
      * @param planTable
      * @return le nombre de place restantes par table avec le nom , prenom et nombre d'accompagnant
      */
-    public String afficherPlanTable(Map<Table, ArrayList<Particulier>> planTable) {
+    public String afficherPlanTable(SortedMap<Table, ArrayList<Particulier>> planTable) {
         String res = "";
         for (Table table : planTable.keySet()) {
             res += "Table numéro " + table.getNumTable() + " { ";
