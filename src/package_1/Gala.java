@@ -81,7 +81,8 @@ public class Gala implements Serializable {
         }
         s+="\n";
         s+="----------------LISTE DES ETUDIANTS DANS LA FILE D'ATTENTE :------------\n";
-        s+=etudiantDemandeAttente.toString()+"\n";
+        for (Etudiant etudiantatt : etudiantDemandeAttente)
+        s+=etudiantatt.toString()+"\n";
         s+="\n";
         s+="----------LISTE DES ETUDIANTS DONT LA DEMANDE A ETE ACCEPTEE :----------\n";
         for (Etudiant etudiantaccepte : etudiantDemandeAcceptee){
@@ -95,24 +96,10 @@ public class Gala implements Serializable {
         }
         s+="\n";
         s+="-------LISTE DES TABLES POUR ETUDIANTS ET LEUR(S) OCCUPANT(S) :---------\n";
-        Set<Map.Entry<Table, ArrayList<Particulier>>> settablesetu = lesTablesEtu.entrySet();
-        for (Map.Entry<Table, ArrayList<Particulier>> entree : settablesetu){
-            s+= entree.getKey().toString()+" : ";
-            for (Particulier p : entree.getValue()){
-                s+= p.toString();
-            }
-            s+="\n";
-        }
+        s+=afficherPlanTable(lesTablesEtu);
         s+="\n";
         s+="-------LISTE DES TABLES POUR LE PERSONNEL ET LEUR(S) OCCUPANT(S) :------\n";
-        Set<Map.Entry<Table, ArrayList<Particulier>>> settablesperso = lesTablesPerso.entrySet();
-        for (Map.Entry<Table, ArrayList<Particulier>> entree : settablesperso){
-            s+= entree.getKey().toString()+" : ";
-            for (Particulier p : entree.getValue()){
-                s+= p.toString();
-            }
-            s+="\n";
-        }
+        s+=afficherPlanTable(lesTablesPerso);
         s+="\n";
         s+="------------------------FIN DE L'ETAT DU GALA--------------------------- \n";
         return s;
