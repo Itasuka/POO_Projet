@@ -12,11 +12,12 @@ public class Ihm {
      */
     public int etudiantOuPersonnel() {
         while (true) {
-            System.out.println("Etes-vous étudiant ou personnel ? Entrez 1 pour étudiant, 2 pour personnel.");
+            System.out.println("Etes-vous étudiant ou personnel ? Entrez 1 pour étudiant, 2 pour personnel ou 3 pour fermer l'application.");
             if (scan.hasNextInt()) {
                 return scan.nextInt();
             } else {
                 System.out.println("/!\\ Entrez un chiffre /!\\");
+                scan.next();
             }
         }
     }
@@ -33,6 +34,7 @@ public class Ihm {
                 return scan.nextInt();
             } else {
                 System.out.println("/!\\ Entrez votre numéro /!\\");
+                scan.next();
             }
         }
     }
@@ -49,6 +51,7 @@ public class Ihm {
                 return scan.nextInt();
             } else {
                 System.out.println("/!\\ Veuillez rentrer 1 pour incription ou 2 pour quitter /!\\");
+                scan.next();
             }
         }
     }
@@ -65,6 +68,7 @@ public class Ihm {
                 return scan.nextInt();
             } else {
                 System.out.println("/!\\ Veuillez rentrer soit 1 pour gérer les places du dîner, 2 se désinscrire, 3 pour quitter /!\\");
+                scan.next();
             }
         }
     }
@@ -81,6 +85,7 @@ public class Ihm {
                 return scan.nextInt();
             } else {
                 System.out.println("/!\\ Veuillez rentrer 1 pour oui ou 0 pour non /!\\");
+                scan.next();
             }
         }
     }
@@ -97,6 +102,7 @@ public class Ihm {
                 return scan.nextInt();
             } else {
                 System.out.println("/!\\ Veuillez rentrer un numéro de table /!\\");
+                scan.next();
             }
         }
     }
@@ -113,6 +119,7 @@ public class Ihm {
                 return scan.nextInt();
             } else {
                 System.out.println("/!\\ Veuillez rentrer un nombre de place /!\\");
+                scan.next();
             }
         }
     }

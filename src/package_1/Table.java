@@ -1,10 +1,11 @@
 package package_1;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-public class Table {
+public class Table implements Serializable,Comparable<Table> {
 
     private int numTable;
     private int nombrePlacesLibres;
@@ -48,5 +49,16 @@ public class Table {
     public String toString(){
         String s = "Table n°"+numTable+" ayant "+nombrePlacesLibres+" places libres";
         return s;
+    }
+
+    @Override
+    public int compareTo(Table t){
+        if(this.numTable>t.numTable){
+            return 1;
+        }
+        if(this.numTable<t.numTable){
+            return -1;
+        }
+        return 0;
     }
 }

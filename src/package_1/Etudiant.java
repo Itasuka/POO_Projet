@@ -1,6 +1,8 @@
 package package_1;
 
-public class Etudiant extends Particulier {
+import java.io.Serializable;
+
+public class Etudiant extends Particulier implements Serializable {
     private final int annee;
 
     public Etudiant(int numero, String nom, String prenom, int tel, String email, int annee) {

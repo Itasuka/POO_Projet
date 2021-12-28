@@ -2,26 +2,55 @@ package package_1;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-public class Gala {
-    //--------------------------ATTRIBUTS----------------------------
-    private final LocalDate DATE;
+public class Gala implements Serializable {
+    private final int ANNEE;
+    private final int MOIS;
+    private final int JOUR;
     private static int taillepqueue = 200; //taille initiale de la priority queue qu'on double lors d'ajout si nécessaire
     private static double tarif1 = 10.0;
     private static double tarif2 = 15.0;
     private static double tarif3 = 20.0;
-    private static int nbTotalTablesEtudiant = 15;
-    private static int nbTotalTablesPersonnel = 10;
-    private static int nbPlacesTotalesDispoEtu = nbTotalTablesEtudiant * 8;
-    private static int nbPlacesTotalesDispoPerso = nbTotalTablesPersonnel * 8;
+    private static final int nbTotalTablesEtudiant = 15;
+    private static final int nbTotalTablesPersonnel = 10;
+    private static final int nbPlacesTotalesDispoEtu = nbTotalTablesEtudiant * 8;
+    private static final int nbPlacesTotalesDispoPerso = nbTotalTablesPersonnel * 8;
     public SortedSet<Etudiant> lesEtudiants = new TreeSet<>();
     public SortedSet<Personnel> lePersonnel = new TreeSet<>();
     private SortedSet<Etudiant> lesEtudiantsInscrit = new TreeSet<>();
     private SortedSet<Personnel> lePersonnelInscrit = new TreeSet<>();
-    private PriorityQueue<Etudiant> etudiantDemandeAttente = new PriorityQueue<Etudiant>(taillepqueue, new Comparator<Etudiant>() {
+    private PriorityQueue<Etudiant> etudiantDemandeAttente = new PriorityQueue<>(taillepqueue, new Comparaison());
+    private SortedSet<Etudiant> etudiantDemandeAcceptee = new TreeSet<>();
+
+    public SortedMap<Particulier, Reservation> getLesReservations() {
+        return lesReservations;
+    }
+
+    private SortedMap<Particulier, Reservation> lesReservations = new TreeMap<>();
+    private SortedMap<Table, ArrayList<Particulier>> lesTablesEtu = new TreeMap<>();
+    private SortedMap<Table, ArrayList<Particulier>> lesTablesPerso = new TreeMap<>();
+
+    public PriorityQueue<Etudiant> getEtudiantDemandeAttente() { return etudiantDemandeAttente; }
+
+    public SortedSet<Etudiant> getEtudiantDemandeAcceptee() {
+        return etudiantDemandeAcceptee;
+    }
+
+
+    public SortedMap<Table, ArrayList<Particulier>> getLesTablesEtu() {
+        return lesTablesEtu;
+    }
+
+    public SortedMap<Table, ArrayList<Particulier>> getLesTablesPerso() {
+        return lesTablesPerso;
+    }
+    //-----------------------------------------------------------------
+
+    class Comparaison implements Comparator<Etudiant>,Serializable{
         @Override
         public int compare(Etudiant e1, Etudiant e2) {
             if (e1.getAnnee() == 5 && e2.getAnnee() != 5) {
@@ -33,32 +62,8 @@ public class Gala {
             //if (e1.getAnnee()==5 && e2.getAnnee()==5 || e1.getAnnee()!=5 && e2.getAnnee()!=5)
             return lesReservations.get(e1).getDateReservation().compareTo(lesReservations.get(e2).getDateReservation());
         }
-    });
-    private SortedSet<Etudiant> etudiantDemandeAcceptee = new TreeSet<>();
-    private SortedMap<Particulier, Reservation> lesReservations = new TreeMap<>();
-    private SortedMap<Table, ArrayList<Particulier>> lesTablesEtu = new TreeMap<>();
-    private SortedMap<Table, ArrayList<Particulier>> lesTablesPerso = new TreeMap<>();
-    //----------------------------------------------------------------
-
-    //---------------------------GETTERS------------------------------
-    public SortedMap<Particulier, Reservation> getLesReservations() { return lesReservations; }
-
-    public PriorityQueue<Etudiant> getEtudiantDemandeAttente() {
-        return etudiantDemandeAttente;
     }
 
-    public SortedSet<Etudiant> getEtudiantDemandeAcceptee() {
-        return etudiantDemandeAcceptee;
-    }
-
-    public SortedMap<Table, ArrayList<Particulier>> getLesTablesEtu() {
-        return lesTablesEtu;
-    }
-
-    public SortedMap<Table, ArrayList<Particulier>> getLesTablesPerso() {
-        return lesTablesPerso;
-    }
-    //-----------------------------------------------------------------
 
     //--------------------------METHODES-------------------------------
 
@@ -67,16 +72,8 @@ public class Gala {
      * @return l'état des conteneurs de Gala sont forme de String.
      */
     public String toString() {
-        String s = "ETAT DU GALA AYANT LIEU LE "+DATE+" : \n";
-        s += "--------------------LISTE DES ETUDIANTS POUVANT S'INSCRIRE :--------------------\n";
-        for (Etudiant etudiantexistant : lesEtudiants) {
-            s += etudiantexistant.toString() + "\n";
-        }
-        s += "--------------------LISTE DU PERSONNEL POUVANT S'INSCRIRE :--------------------\n";
-        for (Personnel personnelexistant : lePersonnel){
-            s += personnelexistant.toString() + "\n";
-        }
-        s += "--------------------LISTE DES ETUDIANTS INSCRITS AU GALA :--------------------\n";
+        String s = "ETAT DU GALA AYANT LIEU LE "+JOUR+"/"+MOIS+"/"+ANNEE+" : \n";
+      s += "--------------------LISTE DES ETUDIANTS INSCRITS AU GALA :--------------------\n";
         for (Etudiant etudiantinscrit : lesEtudiantsInscrit){
             s += etudiantinscrit.toString() + "\n";
         }
@@ -120,7 +117,10 @@ public class Gala {
 
 
     public Gala(LocalDate date) throws FileNotFoundException {
-        this.DATE = date;
+
+        this.ANNEE = date.getYear();
+        this.MOIS = date.getMonthValue();
+        this.JOUR = date.getDayOfMonth();
 
         Scanner sc = new Scanner(new File("src\\etudiants.txt"));
         while (sc.hasNextLine()) {
@@ -155,13 +155,6 @@ public class Gala {
         }
     }
 
-
-    /** description de la fonction calculMontant
-     *Cette fonction permet de calucler le montant qu'une personne doit payer
-     * @param part
-     * @param nombrePlaces
-     * @return le montant total à payer
-     */
     public double calculMontant(Particulier part, int nombrePlaces) {
         double montant = 0;
         if (part.getTarif() == 1) {
@@ -222,16 +215,15 @@ public class Gala {
      * @throw PasInscrisException() si l'étudiant n'est pas inscrit
      */
     public void desincrire(Particulier part) {
-        if (lesReservations.get(part) != null) {
-            supprimerReservation(part);
-        }
         if (lesEtudiantsInscrit.contains(part)) {
             lesEtudiantsInscrit.remove(part);
         }
-        if (lePersonnelInscrit.contains(part)) {
+        else if (lePersonnelInscrit.contains(part)) {
             lePersonnelInscrit.remove(part);
         }
-        throw new PasInscritException();
+        else {
+            throw new PasInscritException();
+        }
     }
 
 
@@ -249,7 +241,7 @@ public class Gala {
                     return t.getNumTable();
                 }
             }
-        } else {
+        } else if (lePersonnel.contains(p)) {
             Set<Table> settableperso = lesTablesPerso.keySet();
             for (Table t : settableperso) {
                 if (t.getNombrePlacesLibres() >= nombreplaces) {
@@ -294,7 +286,10 @@ public class Gala {
      */
     //Pour les Etudiants
     //Avant appel vérifier s'il est dans la map étudiants accepté
-    public boolean confirmerReservation(Etudiant e, Reservation reserv, int numeroTable) {
+    public boolean confirmerReservation(Etudiant e, Reservation reserv, int numeroTable) throws MauvaiseTableException {
+        if (numeroTable<11 || numeroTable>25){
+            throw new MauvaiseTableException();
+        }
         for (Table table : lesTablesEtu.keySet()) {
             if (table.getNumTable() == numeroTable && table.getNombrePlacesLibres() >= reserv.getNombrePlaces()) {
                 double montant = calculMontant(e, reserv.getNombrePlaces());
@@ -309,6 +304,7 @@ public class Gala {
         return false;
     }
 
+    //Pour le Personnel (pas de réserv préalable)
 
     /** description de la fonction creerReservation
      * cette fonction permet de creer une réservation pour un personnel
@@ -319,8 +315,11 @@ public class Gala {
      * @throw lance PlusDePlaceDispoException() si il n'y a plus de places disponibles
      * @throw lance MauvaisNombrePlaceException() si la personne n'a pas choisi le nombre de places possible selon son statut
      */
-    public boolean creerReservation(Personnel pers, int nombrePlaces, int numeroTable) {
+    public boolean creerReservation(Personnel pers, int nombrePlaces, int numeroTable) throws MauvaiseTableException {
         if (!lesReservations.containsKey(pers)) {
+            if (numeroTable<0 || numeroTable>10){
+                throw new MauvaiseTableException();
+            }
             if (nombrePlaces <= 2 && nombrePlaces > 0) {
                 for (Table table : lesTablesPerso.keySet()) {
                     if (table.getNumTable() == numeroTable && table.getNombrePlacesLibres() >= nombrePlaces) {
@@ -330,7 +329,9 @@ public class Gala {
                         table.supprimerPlaces(table.getNumTable(), nombrePlaces);
                         return true;
                     }
-                    throw new PlusDePlaceDispoException();
+                    else if (table.getNumTable() == numeroTable && table.getNombrePlacesLibres() < nombrePlaces){
+                        throw new PlusDePlaceDispoException();
+                    }
                 }
             }
             throw new MauvaisNombrePlaceException();
@@ -348,16 +349,30 @@ public class Gala {
     public void supprimerReservation(Particulier part) {
         if (lesReservations.get(part) != null) {
             int numeroTable = lesReservations.get(part).getNumeroTable();
-            LocalDate dateReserv = lesReservations.get(part).getDateReservation();
-            if (ChronoUnit.DAYS.between(dateReserv, DATE) >= 10) {
+            if (ChronoUnit.DAYS.between(LocalDate.now(), LocalDate.of(ANNEE,MOIS,JOUR)) >= 10) {
                 if (lesEtudiantsInscrit.contains(part)) {
-                    lesTablesEtu.get(numeroTable).remove(part);
+                    for (Table table : lesTablesEtu.keySet()){
+                        if (table.getNumTable()==numeroTable){
+                            lesTablesEtu.get(table).remove(part);
+                            etudiantDemandeAttente.remove(part);
+                            etudiantDemandeAttente.remove(part);
+                            etudiantDemandeAcceptee.remove(part);
+                            lesReservations.remove(part);
+                        }
+                    }
                 }
-                lesTablesPerso.get(numeroTable).remove(part);
+                for (Table table : lesTablesPerso.keySet()){
+                    if (table.getNumTable()==numeroTable){
+                        lesTablesPerso.get(table).remove(part);
+                        lesReservations.remove(part);
+                    }
+                }
+            }else{
+                throw new PlusDeTempsException();
             }
-            throw new PlusDeTempsException();
+        }else{
+            throw new PasDeReservation();
         }
-        throw new PasDeReservation();
     }
 
 

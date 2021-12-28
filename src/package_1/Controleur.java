@@ -1,19 +1,25 @@
 package package_1;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.LocalDate;
 
 public class Controleur {
-    private int numeroEtu = 0;
     private int type = 0;
     private Gala leGala;
     private Ihm leIhm;
+    private ServiceStockage sS = new ServiceStockage();
 
-    public Controleur(LocalDate dateGala) throws FileNotFoundException {
-        leGala = new Gala(dateGala);
+    public Controleur(LocalDate dateGala) throws IOException, ClassNotFoundException {
+        leGala = (Gala) sS.charger();
+        if(leGala==null){
+            leGala = new Gala(dateGala);
+        }
         leIhm = new Ihm();
         System.out.println(leGala);
         lancerAppli();
+        sS.enregistrer(leGala);
+        System.out.println("Sauvegarde effectuée, FIN de l'appli");
     }
 
     public void lancerAppli() {
@@ -43,15 +49,15 @@ public class Controleur {
                                             flag2 = false;
                                             break;
                                         } else {
-                                            leGala.afficherNbPlacesPossible(pers);
                                             boolean flag5=true;
                                             while(flag5){
                                                 int plan = leIhm.consulterPlanTable();
                                                 if (plan == 1) {
-                                                    leGala.afficherPlanTable(leGala.getLesTablesPerso());
+                                                    System.out.println(leGala.afficherPlanTable(leGala.getLesTablesPerso()));
                                                     boolean flag6 = true;
                                                     while (flag6) {
                                                         int table = leIhm.choixTable();
+                                                        System.out.println(leGala.afficherNbPlacesPossible(pers));
                                                         int nbPlaces = leIhm.choixPlaces();
                                                         try {
                                                             leGala.creerReservation(pers, nbPlaces, table);
@@ -61,7 +67,7 @@ public class Controleur {
                                                             flag3 = false;
                                                             flag2 = false;
                                                             break;
-                                                        } catch (MauvaisNombrePlaceException | PlusDePlaceDispoException e) {
+                                                        } catch (MauvaiseTableException | MauvaisNombrePlaceException | PlusDePlaceDispoException e) {
                                                             System.out.println(e.getMessage());
                                                         }
                                                     }
@@ -69,6 +75,7 @@ public class Controleur {
                                                 if (plan == 0) {
                                                     boolean flag6 = true;
                                                     while (flag6) {
+                                                        System.out.println(leGala.afficherNbPlacesPossible(pers));
                                                         int nbPlaces = leIhm.choixPlaces();
                                                         try {
                                                             leGala.creerReservation(pers, nbPlaces, leGala.trouverUneTable(pers, nbPlaces));
@@ -78,7 +85,7 @@ public class Controleur {
                                                             flag3 = false;
                                                             flag2 = false;
                                                             break;
-                                                        } catch (MauvaisNombrePlaceException | PlusDePlaceDispoException e) {
+                                                        } catch (MauvaisNombrePlaceException | PlusDePlaceDispoException | MauvaiseTableException e) {
                                                             System.out.println(e.getMessage());
                                                         }
                                                     }
@@ -98,12 +105,15 @@ public class Controleur {
                                         } catch (PlusDeTempsException e) {
                                             System.out.println(e.getMessage() + ", FIN");
                                         }
+                                        flag4 = false;
+                                        flag3 = false;
+                                        flag2 = false;
                                     } else if (menu == 3) {
                                         flag4 = false;
                                         flag3 = false;
                                         flag2 = false;
                                     } else {
-                                        System.out.println("Il faut écrire 1,2 ou 3 !");
+                                        System.out.println("Le numéro entré n'est pas valide");
                                     }
                                 }
                             } else {
@@ -111,16 +121,16 @@ public class Controleur {
                                 if (iOuQ == 1) {
                                     leGala.inscriptionPersonnel(numero, pers.getNom(), pers.getPrenom(), pers.getTel(), pers.getEmail());
                                 }
-                                if (iOuQ == 2) {
+                                else if (iOuQ == 2) {
                                     flag3 = false;
                                     flag2 = false;
                                 } else {
-                                    System.out.println("Il faut entrer i ou q");
+                                    System.out.println("Le numéro entré n'est pas valide");
                                 }
                             }
                         }
                     } else {
-                        System.out.println("Le numero entré n'est pas valide");
+                        System.out.println("Le numéro entré n'est pas valide");
                     }
                 }
             } else if (type == 1) {
@@ -149,7 +159,7 @@ public class Controleur {
                                                 while (flag5){
                                                     int plan=leIhm.consulterPlanTable();
                                                     if(plan==1){
-                                                        leGala.afficherPlanTable(leGala.getLesTablesEtu());
+                                                        System.out.println(leGala.afficherPlanTable(leGala.getLesTablesEtu()));
                                                         System.out.println("Vous avez demandé "+leGala.getLesReservations().get(etu).getNombrePlaces()+" places");
                                                         boolean flag6 = true;
                                                         while (flag6) {
@@ -162,13 +172,17 @@ public class Controleur {
                                                                 flag3 = false;
                                                                 flag2 = false;
                                                                 break;
-                                                            } catch (MauvaisNombrePlaceException | PlusDePlaceDispoException e) {
+                                                            } catch (MauvaiseTableException | MauvaisNombrePlaceException | PlusDePlaceDispoException e) {
                                                                 System.out.println(e.getMessage());
                                                             }
                                                         }
                                                     }if(plan==0){
                                                         int table = leGala.trouverUneTable(etu, leGala.getLesReservations().get(etu).getNombrePlaces());
-                                                        leGala.confirmerReservation(etu,leGala.getLesReservations().get(etu),table);
+                                                        try {
+                                                            leGala.confirmerReservation(etu,leGala.getLesReservations().get(etu),table);
+                                                        } catch (MauvaiseTableException e) {
+                                                            System.out.println(e.getMessage());
+                                                        }
                                                         System.out.println("Réservation confirmée, FIN");
                                                         flag5 = false;
                                                         flag4 = false;
@@ -188,9 +202,9 @@ public class Controleur {
                                         }
                                         //Gros pavé d'en dessous
                                         else {
-                                            leGala.afficherNbPlacesPossible(etu);
                                             boolean flag5 = true;
                                             while (flag5) {
+                                                System.out.println(leGala.afficherNbPlacesPossible(etu));
                                                 int nbPlaces = leIhm.choixPlaces();
                                                 try {
                                                     leGala.creerReservation(etu, nbPlaces);
@@ -207,14 +221,26 @@ public class Controleur {
 
 
                                     } else if (menu == 2) {
-                                        leGala.supprimerReservation(etu);
-                                        leGala.desincrire(etu);
+                                            try {
+                                                leGala.supprimerReservation(etu);
+                                                System.out.println("La réservation à votre nom a été supprimée");
+                                                leGala.desincrire(etu);
+                                                System.out.println("Désinscription effectué, FIN");
+                                            } catch (PasDeReservation e) {
+                                                System.out.println(e.getMessage() + ", Désincription effectuée, FIN");
+                                                leGala.desincrire(etu);
+                                            } catch (PlusDeTempsException e) {
+                                                System.out.println(e.getMessage() + ", FIN");
+                                        }
+                                            flag4 = false;
+                                            flag3 = false;
+                                            flag2 = false;
                                     } else if (menu == 3) {
                                         flag4 = false;
                                         flag3 = false;
                                         flag2 = false;
                                     } else {
-                                        System.out.println("Il faut écrire 1,2 ou 3 !");
+                                        System.out.println("Le numéro entré n'est pas valide");
                                     }
                                 }
                             } else {
@@ -222,11 +248,11 @@ public class Controleur {
                                 if (iOuQ == 1) {
                                     leGala.inscriptionEtudiant(numero, etu.getNom(), etu.getPrenom(), etu.getTel(), etu.getEmail(), etu.getAnnee());
                                 }
-                                if (iOuQ == 2) {
+                                else if (iOuQ == 2) {
                                     flag3 = false;
                                     flag2 = false;
                                 } else {
-                                    System.out.println("Il faut entrer i ou q");
+                                    System.out.println("Le numéro entré n'est pas valide");
                                 }
                             }
                         }
@@ -234,9 +260,12 @@ public class Controleur {
                         System.out.println("Le numero entré n'est pas valide");
                     }
                 }
-            } else {
-                System.out.println("Il faut entrer e ou p !");
-                //C'est une merde
+            }
+            else if (type==3){
+                break;
+            }
+            else {
+                System.out.println("Le numéro entré n'est pas valide");
             }
         }
     }
