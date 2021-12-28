@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 public class Reservation implements Serializable {
-    private final LocalDate dateReservation;
+    private final int ANNEE;
+    private final int MOIS;
+    private final int JOUR;
     private int numeroTable;
     private int nombrePlaces;
     private double montantReservation;
@@ -13,9 +15,12 @@ public class Reservation implements Serializable {
      *
      * @param nombrePlaces
      */
-    Reservation(int nombrePlaces) {
-        this.dateReservation=LocalDate.now();
+    Reservation(int nombrePlaces, double montant) {
+        this.ANNEE=LocalDate.now().getYear();
+        this.MOIS=LocalDate.now().getMonthValue();
+        this.JOUR=LocalDate.now().getDayOfMonth();
         this.nombrePlaces=nombrePlaces;
+        this.montantReservation=montant;
     }
 
     /** CONSTRUCTEUR POUR FINALISER LA RESERVATION
@@ -25,7 +30,9 @@ public class Reservation implements Serializable {
      * @param numeroTable
      */
     Reservation(Reservation r, double montant, int numeroTable){
-        this.dateReservation=r.dateReservation;
+        this.ANNEE=r.ANNEE;
+        this.MOIS=r.MOIS;
+        this.JOUR=r.JOUR;
         this.nombrePlaces=r.nombrePlaces;
         this.montantReservation=montant;
         this.numeroTable=numeroTable;
@@ -36,12 +43,12 @@ public class Reservation implements Serializable {
      * @return l'état d'une réservation sous la forme d'un String
      */
     public String toString(){
-        String s = "faite le "+dateReservation+", table n°"+numeroTable+" pour "+nombrePlaces+" personne(s) s'élevant à un montant de "+montantReservation+"€";
+        String s = "faite le "+JOUR+"/"+MOIS+"/"+ANNEE+", table n°"+numeroTable+" pour "+nombrePlaces+" personne(s) s'élevant à un montant de "+montantReservation+"€";
         return s;
     }
 
     public LocalDate getDateReservation() {
-        return dateReservation;
+        return LocalDate.of(ANNEE,MOIS,JOUR);
     }
 
     public int getNumeroTable() {

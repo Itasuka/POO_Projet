@@ -18,11 +18,13 @@ public class Controleur {
         leIhm = new Ihm();
         System.out.println(leGala);
         lancerAppli();
+        System.out.println(leGala);
         sS.enregistrer(leGala);
         System.out.println("Sauvegarde effectuée, FIN de l'appli");
     }
 
     public void lancerAppli() {
+        leGala.avancerLaQueue();
         boolean flag1 = true;
         while (flag1) {
             type = leIhm.etudiantOuPersonnel();
