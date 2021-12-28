@@ -1,6 +1,7 @@
 package package_1;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public abstract class Particulier implements Comparable<Particulier>, Serializable {
     private final int numero;
@@ -52,4 +53,16 @@ public abstract class Particulier implements Comparable<Particulier>, Serializab
         return s+=this.numero+" "+this.nom+" "+this.prenom+" "+this.tel+" "+this.email;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Particulier that = (Particulier) o;
+        return numero == that.numero && tel == that.tel && Objects.equals(nom, that.nom) && Objects.equals(prenom, that.prenom) && Objects.equals(email, that.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(numero, nom, prenom, tel, email);
+    }
 }

@@ -18,7 +18,7 @@ public class Etudiant extends Particulier implements Serializable {
         }return 2;
     }
 
-    /** description de la fonction <b>toString</b>
+    /** description de la fonction toString
      * donne les informations de l'étudiant
      * @return les informations de l'étudiant
      */

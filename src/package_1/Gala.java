@@ -18,34 +18,31 @@ public class Gala implements Serializable {
     private static final int nbTotalTablesEtudiant = 15;
     private static final int nbTotalTablesPersonnel = 10;
     private static final int nbPlacesTotalesDispoEtu = nbTotalTablesEtudiant * 8;
-    public SortedSet<Etudiant> lesEtudiants = new TreeSet<>();
-    public SortedSet<Personnel> lePersonnel = new TreeSet<>();
-    private SortedSet<Etudiant> lesEtudiantsInscrit = new TreeSet<>();
-    private SortedSet<Personnel> lePersonnelInscrit = new TreeSet<>();
+    public Set<Etudiant> lesEtudiants = new HashSet<>();
+    public Set<Personnel> lePersonnel = new HashSet<>();
+    private Set<Etudiant> lesEtudiantsInscrit = new HashSet<>();
+    private Set<Personnel> lePersonnelInscrit = new HashSet<>();
     private PriorityQueue<Etudiant> etudiantDemandeAttente = new PriorityQueue<>(taillepqueue, new Comparaison());
-    private SortedSet<Etudiant> etudiantDemandeAcceptee = new TreeSet<>();
+    private Set<Etudiant> etudiantDemandeAcceptee = new HashSet<>();
+    private Map<Particulier, Reservation> lesReservations = new HashMap<>();
+    private Map<Table, ArrayList<Particulier>> lesTablesEtu = new HashMap<>();
+    private Map<Table, ArrayList<Particulier>> lesTablesPerso = new HashMap<>();
 
-    private SortedMap<Particulier, Reservation> lesReservations = new TreeMap<>();
-    private SortedMap<Table, ArrayList<Particulier>> lesTablesEtu = new TreeMap<>();
-    private SortedMap<Table, ArrayList<Particulier>> lesTablesPerso = new TreeMap<>();
+    public PriorityQueue<Etudiant> getEtudiantDemandeAttente() { return etudiantDemandeAttente; }
 
-    public PriorityQueue<Etudiant> getEtudiantDemandeAttente() {
-        return etudiantDemandeAttente;
-    }
-
-    public SortedMap<Particulier, Reservation> getLesReservations() {
-        return lesReservations;
-    }
-
-    public SortedSet<Etudiant> getEtudiantDemandeAcceptee() {
+    public Set<Etudiant> getEtudiantDemandeAcceptee() {
         return etudiantDemandeAcceptee;
     }
 
-    public SortedMap<Table, ArrayList<Particulier>> getLesTablesEtu() {
+    public Map<Particulier, Reservation> getLesReservations() {
+        return lesReservations;
+    }
+
+    public Map<Table, ArrayList<Particulier>> getLesTablesEtu() {
         return lesTablesEtu;
     }
 
-    public SortedMap<Table, ArrayList<Particulier>> getLesTablesPerso() {
+    public Map<Table, ArrayList<Particulier>> getLesTablesPerso() {
         return lesTablesPerso;
     }
     //-----------------------------------------------------------------
@@ -68,52 +65,56 @@ public class Gala implements Serializable {
 
     //--------------------------METHODES-------------------------------
 
-    /**
-     * TO STRING GALA
-     *
+    /** TO STRING GALA
      * @return l'état des conteneurs de Gala sont forme de String.
      */
     public String toString() {
-        String s = "ETAT DU GALA AYANT LIEU LE " + JOUR + "/" + MOIS + "/" + ANNEE + " : \n";
-        s += "--------------------LISTE DES ETUDIANTS INSCRITS AU GALA :--------------------\n";
-        for (Etudiant etudiantinscrit : lesEtudiantsInscrit) {
+        String s = "ETAT DU GALA AYANT LIEU LE "+JOUR+"/"+MOIS+"/"+ANNEE+" : \n";
+      s += "-----------------LISTE DES ETUDIANTS INSCRITS AU GALA :----------------\n";
+        for (Etudiant etudiantinscrit : lesEtudiantsInscrit){
             s += etudiantinscrit.toString() + "\n";
         }
-        s += "--------------------LISTE DU PERSONNEL INSCRIT AU GALA :--------------------\n";
-        for (Personnel personnelinscrit : lePersonnelInscrit) {
+        s+="\n";
+        s+= "-----------------LISTE DU PERSONNEL INSCRIT AU GALA :-----------------\n";
+        for (Personnel personnelinscrit : lePersonnelInscrit){
             s += personnelinscrit.toString() + "\n";
         }
-        s += "--------------------LISTE DES ETUDIANTS DANS LA FILE D'ATTENTE :--------------------\n";
-        s += etudiantDemandeAttente.toString();
-        s += "--------------------LISTE DES ETUDIANTS DONT LA DEMANDE A ETE ACCEPTEE :--------------------\n [";
-        String sep = "";
-        for (Etudiant etudiantaccepte : etudiantDemandeAcceptee) {
-            s += sep + etudiantaccepte.toString();
-            sep = ",";
+        s+="\n";
+        s+="----------------LISTE DES ETUDIANTS DANS LA FILE D'ATTENTE :------------\n";
+        s+=etudiantDemandeAttente.toString()+"\n";
+        s+="\n";
+        s+="----------LISTE DES ETUDIANTS DONT LA DEMANDE A ETE ACCEPTEE :----------\n";
+        for (Etudiant etudiantaccepte : etudiantDemandeAcceptee){
+            s += etudiantaccepte.toString() + "\n";
         }
-        s += "]";
-        s += "--------------------LISTE DES RESERVATIONS :--------------------\n";
-        Set<Map.Entry<Particulier, Reservation>> setreservations = lesReservations.entrySet();
-        for (Map.Entry<Particulier, Reservation> entree : setreservations) {
-            s += entree.getKey().toString() + " à la réservation suivante : " + entree.getValue().toString() + "\n";
+        s+="\n";
+        s+="-------------------------LISTE DES RESERVATIONS :-----------------------\n";
+        Set<Map.Entry<Particulier,Reservation>> setreservations = lesReservations.entrySet();
+        for (Map.Entry<Particulier,Reservation> entree : setreservations){
+            s+= entree.getKey().toString() +" à la réservation suivante : "+ entree.getValue().toString()+"\n";
         }
-        s += "--------------------LISTE DES TABLES POUR ETUDIANTS ET LEUR(S) OCCUPANT(S) :--------------------\n";
+        s+="\n";
+        s+="-------LISTE DES TABLES POUR ETUDIANTS ET LEUR(S) OCCUPANT(S) :---------\n";
         Set<Map.Entry<Table, ArrayList<Particulier>>> settablesetu = lesTablesEtu.entrySet();
-        for (Map.Entry<Table, ArrayList<Particulier>> entree : settablesetu) {
-            s += entree.getKey().toString() + " : ";
-            for (Particulier p : entree.getValue()) {
-                s += p.toString() + "\n";
+        for (Map.Entry<Table, ArrayList<Particulier>> entree : settablesetu){
+            s+= entree.getKey().toString()+" : ";
+            for (Particulier p : entree.getValue()){
+                s+= p.toString();
             }
+            s+="\n";
         }
-        s += "--------------------LISTE DES TABLES POUR LE PERSONNEL ET LEUR(S) OCCUPANT(S) :--------------------\n";
+        s+="\n";
+        s+="-------LISTE DES TABLES POUR LE PERSONNEL ET LEUR(S) OCCUPANT(S) :------\n";
         Set<Map.Entry<Table, ArrayList<Particulier>>> settablesperso = lesTablesPerso.entrySet();
-        for (Map.Entry<Table, ArrayList<Particulier>> entree : settablesperso) {
-            s += entree.getKey().toString() + " : ";
-            for (Particulier p : entree.getValue()) {
-                s += p.toString() + "\n";
+        for (Map.Entry<Table, ArrayList<Particulier>> entree : settablesperso){
+            s+= entree.getKey().toString()+" : ";
+            for (Particulier p : entree.getValue()){
+                s+= p.toString();
             }
+            s+="\n";
         }
-        s += "--------------------FIN DE L'ETAT DU GALA--------------------";
+        s+="\n";
+        s+="------------------------FIN DE L'ETAT DU GALA--------------------------- \n";
         return s;
     }
 
@@ -397,7 +398,7 @@ public class Gala implements Serializable {
      * @param planTable
      * @return le nombre de place restantes par table avec le nom , prenom et nombre d'accompagnant
      */
-    public String afficherPlanTable(SortedMap<Table, ArrayList<Particulier>> planTable) {
+    public String afficherPlanTable(Map<Table, ArrayList<Particulier>> planTable) {
         String res = "";
         for (Table table : planTable.keySet()) {
             res += "Table numéro " + table.getNumTable() + " { ";
