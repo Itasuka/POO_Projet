@@ -2,7 +2,6 @@ package package_1;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -63,16 +62,5 @@ public class Table implements Serializable,Comparable<Table> {
         return 0;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Table table = (Table) o;
-        return numTable == table.numTable && nombrePlacesLibres == table.nombrePlacesLibres;
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(numTable, nombrePlacesLibres);
-    }
 }

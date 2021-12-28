@@ -15,7 +15,7 @@ public class Reservation implements Serializable {
      *
      * @param nombrePlaces
      */
-    Reservation(int nombrePlaces, double montant) {
+    public Reservation(int nombrePlaces, double montant) {
         this.ANNEE=LocalDate.now().getYear();
         this.MOIS=LocalDate.now().getMonthValue();
         this.JOUR=LocalDate.now().getDayOfMonth();
@@ -29,7 +29,7 @@ public class Reservation implements Serializable {
      * @param montant
      * @param numeroTable
      */
-    Reservation(Reservation r, double montant, int numeroTable){
+    public Reservation(Reservation r, double montant, int numeroTable){
         this.ANNEE=r.ANNEE;
         this.MOIS=r.MOIS;
         this.JOUR=r.JOUR;
