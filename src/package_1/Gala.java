@@ -12,13 +12,12 @@ public class Gala implements Serializable {
     private final int MOIS;
     private final int JOUR;
     private static int taillepqueue = 200; //taille initiale de la priority queue qu'on double lors d'ajout si nécessaire
-    private static double tarif1 = 10.0;
-    private static double tarif2 = 15.0;
-    private static double tarif3 = 20.0;
+    private static final double tarif1 = 10.0;
+    private static final double tarif2 = 15.0;
+    private static final double tarif3 = 20.0;
     private static final int nbTotalTablesEtudiant = 15;
     private static final int nbTotalTablesPersonnel = 10;
     private static final int nbPlacesTotalesDispoEtu = nbTotalTablesEtudiant * 8;
-    private static final int nbPlacesTotalesDispoPerso = nbTotalTablesPersonnel * 8;
     public SortedSet<Etudiant> lesEtudiants = new TreeSet<>();
     public SortedSet<Personnel> lePersonnel = new TreeSet<>();
     private SortedSet<Etudiant> lesEtudiantsInscrit = new TreeSet<>();
@@ -26,20 +25,21 @@ public class Gala implements Serializable {
     private PriorityQueue<Etudiant> etudiantDemandeAttente = new PriorityQueue<>(taillepqueue, new Comparaison());
     private SortedSet<Etudiant> etudiantDemandeAcceptee = new TreeSet<>();
 
-    public SortedMap<Particulier, Reservation> getLesReservations() {
-        return lesReservations;
-    }
-
     private SortedMap<Particulier, Reservation> lesReservations = new TreeMap<>();
     private SortedMap<Table, ArrayList<Particulier>> lesTablesEtu = new TreeMap<>();
     private SortedMap<Table, ArrayList<Particulier>> lesTablesPerso = new TreeMap<>();
 
-    public PriorityQueue<Etudiant> getEtudiantDemandeAttente() { return etudiantDemandeAttente; }
+    public PriorityQueue<Etudiant> getEtudiantDemandeAttente() {
+        return etudiantDemandeAttente;
+    }
+
+    public SortedMap<Particulier, Reservation> getLesReservations() {
+        return lesReservations;
+    }
 
     public SortedSet<Etudiant> getEtudiantDemandeAcceptee() {
         return etudiantDemandeAcceptee;
     }
-
 
     public SortedMap<Table, ArrayList<Particulier>> getLesTablesEtu() {
         return lesTablesEtu;
@@ -50,7 +50,7 @@ public class Gala implements Serializable {
     }
     //-----------------------------------------------------------------
 
-    class Comparaison implements Comparator<Etudiant>,Serializable{
+    class Comparaison implements Comparator<Etudiant>, Serializable {
         @Override
         public int compare(Etudiant e1, Etudiant e2) {
             if (e1.getAnnee() == 5 && e2.getAnnee() != 5) {
@@ -60,58 +60,60 @@ public class Gala implements Serializable {
                 return 1;
             }
             //if (e1.getAnnee()==5 && e2.getAnnee()==5 || e1.getAnnee()!=5 && e2.getAnnee()!=5)
-            return lesReservations.get(e1).getDateReservation().compareTo(lesReservations.get(e2).getDateReservation());
+            return getLesReservations().get(e1).getDateReservation().compareTo(getLesReservations().get(e2).getDateReservation());
+
         }
     }
 
 
     //--------------------------METHODES-------------------------------
 
-    /** TO STRING GALA
+    /**
+     * TO STRING GALA
      *
      * @return l'état des conteneurs de Gala sont forme de String.
      */
     public String toString() {
-        String s = "ETAT DU GALA AYANT LIEU LE "+JOUR+"/"+MOIS+"/"+ANNEE+" : \n";
-      s += "--------------------LISTE DES ETUDIANTS INSCRITS AU GALA :--------------------\n";
-        for (Etudiant etudiantinscrit : lesEtudiantsInscrit){
+        String s = "ETAT DU GALA AYANT LIEU LE " + JOUR + "/" + MOIS + "/" + ANNEE + " : \n";
+        s += "--------------------LISTE DES ETUDIANTS INSCRITS AU GALA :--------------------\n";
+        for (Etudiant etudiantinscrit : lesEtudiantsInscrit) {
             s += etudiantinscrit.toString() + "\n";
         }
-        s+= "--------------------LISTE DU PERSONNEL INSCRIT AU GALA :--------------------\n";
-        for (Personnel personnelinscrit : lePersonnelInscrit){
+        s += "--------------------LISTE DU PERSONNEL INSCRIT AU GALA :--------------------\n";
+        for (Personnel personnelinscrit : lePersonnelInscrit) {
             s += personnelinscrit.toString() + "\n";
         }
-        s+="--------------------LISTE DES ETUDIANTS DANS LA FILE D'ATTENTE :--------------------\n";
-        s+=etudiantDemandeAttente.toString();
-        s+="--------------------LISTE DES ETUDIANTS DONT LA DEMANDE A ETE ACCEPTEE :--------------------\n [";
-        String sep="";
-        for (Etudiant etudiantinscrit : lesEtudiantsInscrit){
-            s += sep + etudiantinscrit.toString();
-            sep=",";
+        s += "--------------------LISTE DES ETUDIANTS DANS LA FILE D'ATTENTE :--------------------\n";
+        s += etudiantDemandeAttente.toString();
+        s += "--------------------LISTE DES ETUDIANTS DONT LA DEMANDE A ETE ACCEPTEE :--------------------\n [";
+        String sep = "";
+        for (Etudiant etudiantaccepte : etudiantDemandeAcceptee) {
+            s += sep + etudiantaccepte.toString();
+            sep = ",";
         }
-        s+="]";
-        s+="--------------------LISTE DES RESERVATIONS :--------------------\n";
-        Set<Map.Entry<Particulier,Reservation>> setreservations = lesReservations.entrySet();
-        for (Map.Entry<Particulier,Reservation> entree : setreservations){
-            s+= entree.getKey().toString() +" à la réservation suivante : "+ entree.getValue().toString()+"\n";
+        s += "]";
+        s += "--------------------LISTE DES RESERVATIONS :--------------------\n";
+        Set<Map.Entry<Particulier, Reservation>> setreservations = lesReservations.entrySet();
+        for (Map.Entry<Particulier, Reservation> entree : setreservations) {
+            s += entree.getKey().toString() + " à la réservation suivante : " + entree.getValue().toString() + "\n";
         }
-        s+="--------------------LISTE DES TABLES POUR ETUDIANTS ET LEUR(S) OCCUPANT(S) :--------------------\n";
+        s += "--------------------LISTE DES TABLES POUR ETUDIANTS ET LEUR(S) OCCUPANT(S) :--------------------\n";
         Set<Map.Entry<Table, ArrayList<Particulier>>> settablesetu = lesTablesEtu.entrySet();
-        for (Map.Entry<Table, ArrayList<Particulier>> entree : settablesetu){
-            s+= entree.getKey().toString()+" : ";
-            for (Particulier p : entree.getValue()){
-                s+= p.toString()+"\n";
+        for (Map.Entry<Table, ArrayList<Particulier>> entree : settablesetu) {
+            s += entree.getKey().toString() + " : ";
+            for (Particulier p : entree.getValue()) {
+                s += p.toString() + "\n";
             }
         }
-        s+="--------------------LISTE DES TABLES POUR LE PERSONNEL ET LEUR(S) OCCUPANT(S) :--------------------\n";
+        s += "--------------------LISTE DES TABLES POUR LE PERSONNEL ET LEUR(S) OCCUPANT(S) :--------------------\n";
         Set<Map.Entry<Table, ArrayList<Particulier>>> settablesperso = lesTablesPerso.entrySet();
-        for (Map.Entry<Table, ArrayList<Particulier>> entree : settablesperso){
-            s+= entree.getKey().toString()+" : ";
-            for (Particulier p : entree.getValue()){
-                s+= p.toString()+"\n";
+        for (Map.Entry<Table, ArrayList<Particulier>> entree : settablesperso) {
+            s += entree.getKey().toString() + " : ";
+            for (Particulier p : entree.getValue()) {
+                s += p.toString() + "\n";
             }
         }
-        s+="--------------------FIN DE L'ETAT DU GALA--------------------";
+        s += "--------------------FIN DE L'ETAT DU GALA--------------------";
         return s;
     }
 
@@ -150,7 +152,7 @@ public class Gala implements Serializable {
         for (int i = 1; i <= nbTotalTablesPersonnel; i++) {
             lesTablesPerso.put(new Table(i), new ArrayList<>());
         }
-        for (int i = nbTotalTablesPersonnel + 1; i <= nbTotalTablesEtudiant; i++) {
+        for (int i = nbTotalTablesPersonnel + 1; i <= nbTotalTablesPersonnel + nbTotalTablesEtudiant; i++) {
             lesTablesEtu.put(new Table(i), new ArrayList<>());
         }
     }
@@ -170,8 +172,10 @@ public class Gala implements Serializable {
     }
 
 
-    /** description de la fonction inscription étudiant
+    /**
+     * description de la fonction inscription étudiant
      * permet d'ajouter un étudiant dans la liste des étudiants inscrit
+     *
      * @param numeroetu
      * @param nom
      * @param prenom
@@ -190,8 +194,10 @@ public class Gala implements Serializable {
     }
 
 
-    /** description de la fonction inscriptionPersonnel
+    /**
+     * description de la fonction inscriptionPersonnel
      * permet d'ajouter un personnel dans la liste des personnels inscrit
+     *
      * @param numero
      * @param nom
      * @param prenom
@@ -209,25 +215,27 @@ public class Gala implements Serializable {
     }
 
 
-    /** description de la fonction desinscrire
-     *cette fonction permet de désisncrire des listes un particulier
+    /**
+     * description de la fonction desinscrire
+     * cette fonction permet de désisncrire des listes un particulier
+     *
      * @param part
      * @throw PasInscrisException() si l'étudiant n'est pas inscrit
      */
     public void desincrire(Particulier part) {
         if (lesEtudiantsInscrit.contains(part)) {
             lesEtudiantsInscrit.remove(part);
-        }
-        else if (lePersonnelInscrit.contains(part)) {
+        } else if (lePersonnelInscrit.contains(part)) {
             lePersonnelInscrit.remove(part);
-        }
-        else {
+        } else {
             throw new PasInscritException();
         }
     }
 
 
-    /** description de la fonction TrouverUneTable
+    /**
+     * description de la fonction TrouverUneTable
+     *
      * @param p
      * @param nombreplaces
      * @return donne le numero de la table ou il y a suffisament de place de libre
@@ -253,8 +261,10 @@ public class Gala implements Serializable {
     }
 
 
-    /** description de la fonction creerReservation
+    /**
+     * description de la fonction creerReservation
      * cette fonction permet de placer un étudiant dans le map des demandes en attente et de créer partiellement sa réservation
+     *
      * @param e
      * @param nombrePlaces
      * @return true si la demande de réservation a été enregisté et false sinon
@@ -263,7 +273,7 @@ public class Gala implements Serializable {
     public boolean creerReservation(Etudiant e, int nombrePlaces) {
         if (!lesReservations.containsKey(e)) {
             if (e.getAnnee() == 5 && nombrePlaces <= 4 && nombrePlaces >= 1 || e.getAnnee() < 5 && nombrePlaces <= 2 && nombrePlaces >= 1) {
-                lesReservations.put(e, new Reservation(nombrePlaces));
+                lesReservations.put(e, new Reservation(nombrePlaces, calculMontant(e, nombrePlaces)));
                 if (taillepqueue == etudiantDemandeAttente.size()) {
                     taillepqueue *= 2;
                 }
@@ -276,8 +286,10 @@ public class Gala implements Serializable {
     }
 
 
-    /** description de la fonction confirmerReservation
-     *cette fonction permet de supprimer l'étudiant des demandes en attente lorsqu'il finalisera sa réservation
+    /**
+     * description de la fonction confirmerReservation
+     * cette fonction permet de supprimer l'étudiant des demandes en attente lorsqu'il finalisera sa réservation
+     *
      * @param e
      * @param reserv
      * @param numeroTable
@@ -287,7 +299,7 @@ public class Gala implements Serializable {
     //Pour les Etudiants
     //Avant appel vérifier s'il est dans la map étudiants accepté
     public boolean confirmerReservation(Etudiant e, Reservation reserv, int numeroTable) throws MauvaiseTableException {
-        if (numeroTable<11 || numeroTable>25){
+        if (numeroTable < 11 || numeroTable > 25) {
             throw new MauvaiseTableException();
         }
         for (Table table : lesTablesEtu.keySet()) {
@@ -306,8 +318,10 @@ public class Gala implements Serializable {
 
     //Pour le Personnel (pas de réserv préalable)
 
-    /** description de la fonction creerReservation
+    /**
+     * description de la fonction creerReservation
      * cette fonction permet de creer une réservation pour un personnel
+     *
      * @param pers
      * @param nombrePlaces
      * @param numeroTable
@@ -317,19 +331,18 @@ public class Gala implements Serializable {
      */
     public boolean creerReservation(Personnel pers, int nombrePlaces, int numeroTable) throws MauvaiseTableException {
         if (!lesReservations.containsKey(pers)) {
-            if (numeroTable<0 || numeroTable>10){
+            if (numeroTable < 0 || numeroTable > 10) {
                 throw new MauvaiseTableException();
             }
             if (nombrePlaces <= 2 && nombrePlaces > 0) {
                 for (Table table : lesTablesPerso.keySet()) {
                     if (table.getNumTable() == numeroTable && table.getNombrePlacesLibres() >= nombrePlaces) {
                         double montant = calculMontant(pers, nombrePlaces);
-                        lesReservations.put(pers, new Reservation(new Reservation(nombrePlaces), montant, numeroTable));
+                        lesReservations.put(pers, new Reservation(new Reservation(nombrePlaces, montant), montant, numeroTable));
                         lesTablesPerso.get(table).add(pers);
                         table.supprimerPlaces(table.getNumTable(), nombrePlaces);
                         return true;
-                    }
-                    else if (table.getNumTable() == numeroTable && table.getNombrePlacesLibres() < nombrePlaces){
+                    } else if (table.getNumTable() == numeroTable && table.getNombrePlacesLibres() < nombrePlaces) {
                         throw new PlusDePlaceDispoException();
                     }
                 }
@@ -340,8 +353,10 @@ public class Gala implements Serializable {
     }
 
 
-    /** description de la fonction supprimerReservation
-     *cette fonction permet de supprimer la reversation d'un particulier
+    /**
+     * description de la fonction supprimerReservation
+     * cette fonction permet de supprimer la reversation d'un particulier
+     *
      * @param part
      * @throw lance PlusDeTempsException() si le particulier s'y prend 10 jours ou moins avant le Gala
      * @throw lance PasDeReservation() si il n'y a plus de places
@@ -349,35 +364,36 @@ public class Gala implements Serializable {
     public void supprimerReservation(Particulier part) {
         if (lesReservations.get(part) != null) {
             int numeroTable = lesReservations.get(part).getNumeroTable();
-            if (ChronoUnit.DAYS.between(LocalDate.now(), LocalDate.of(ANNEE,MOIS,JOUR)) >= 10) {
+            if (ChronoUnit.DAYS.between(LocalDate.now(), LocalDate.of(ANNEE, MOIS, JOUR)) >= 10) {
                 if (lesEtudiantsInscrit.contains(part)) {
-                    for (Table table : lesTablesEtu.keySet()){
-                        if (table.getNumTable()==numeroTable){
+                    lesReservations.remove(part);
+                    etudiantDemandeAttente.remove(part);
+                    etudiantDemandeAcceptee.remove(part);
+                    for (Table table : lesTablesEtu.keySet()) {
+                        if (table.getNumTable() == numeroTable) {
                             lesTablesEtu.get(table).remove(part);
-                            etudiantDemandeAttente.remove(part);
-                            etudiantDemandeAttente.remove(part);
-                            etudiantDemandeAcceptee.remove(part);
-                            lesReservations.remove(part);
                         }
                     }
                 }
-                for (Table table : lesTablesPerso.keySet()){
-                    if (table.getNumTable()==numeroTable){
+                for (Table table : lesTablesPerso.keySet()) {
+                    if (table.getNumTable() == numeroTable) {
                         lesTablesPerso.get(table).remove(part);
                         lesReservations.remove(part);
                     }
                 }
-            }else{
+            } else {
                 throw new PlusDeTempsException();
             }
-        }else{
+        } else {
             throw new PasDeReservation();
         }
     }
 
 
-    /** description de la fonction afficherPlanTable
+    /**
+     * description de la fonction afficherPlanTable
      * cette fonction permet d'afficher le plan de table sous la forme d'un String
+     *
      * @param planTable
      * @return le nombre de place restantes par table avec le nom , prenom et nombre d'accompagnant
      */
@@ -395,8 +411,10 @@ public class Gala implements Serializable {
     }
 
 
-    /** description de la fonction nbPlacePossible
+    /**
+     * description de la fonction nbPlacePossible
      * cette fonction donne le nombre de place possible pour les étudiants selon leur année et les personnels et les places libres aux tables
+     *
      * @param p
      * @return le nombre de place possibles à réserver par l'utilisateur
      */
@@ -449,8 +467,10 @@ public class Gala implements Serializable {
     }
 
 
-    /** description de la fonction afficherNbPlacesPossible
+    /**
+     * description de la fonction afficherNbPlacesPossible
      * cette fonction affiche le nombre de places maximun que le particulier peut réserver
+     *
      * @param p
      * @return le string donnant le nombre de places
      */
@@ -460,8 +480,10 @@ public class Gala implements Serializable {
     }
 
 
-    /** description de la fonction etuExiste
+    /**
+     * description de la fonction etuExiste
      * cette fonction vérifie si un étudiant est dans le map lesEtudiants
+     *
      * @param numero
      * @return l'etudiant si il existe et sinon return null
      */
@@ -475,8 +497,10 @@ public class Gala implements Serializable {
     }
 
 
-    /** description de la fonction persExiste
+    /**
+     * description de la fonction persExiste
      * cette fonction vérifie si un personnel est dans le map lesPersonnel
+     *
      * @param numero
      * @return le personnel si c'est le cas et sinon return null
      */
@@ -490,8 +514,10 @@ public class Gala implements Serializable {
     }
 
 
-    /** description de la fonction etuInscrit
+    /**
+     * description de la fonction etuInscrit
      * cette fonction vérifie si un étudiant est dans le map lesEtudiantInscrit
+     *
      * @param numero
      * @return true si il est dans la map et false dans le cas contraire
      */
@@ -505,8 +531,10 @@ public class Gala implements Serializable {
     }
 
 
-    /** description de la fonction persInscrit
-     *  cette fonction vérifie si un étudiant est dans le map lePersonnelInscrit
+    /**
+     * description de la fonction persInscrit
+     * cette fonction vérifie si un étudiant est dans le map lePersonnelInscrit
+     *
      * @param numero
      * @return true si il est dans la map et false dans le cas contraire
      */
@@ -520,15 +548,15 @@ public class Gala implements Serializable {
     }
 
 
-    /** description de la fonction avancerLaQueue
+    /**
+     * description de la fonction avancerLaQueue
      * cette fonction permet de faire avancer la queue quand un étudiant à sa demander accepter
      */
     public void avancerLaQueue() {
-        int nbplaces = nbPlacesTotalesDispoEtu;
-        boolean drap = true;
-        Set<Map.Entry<Particulier, Reservation>> set = lesReservations.entrySet();
-        if (!etudiantDemandeAttente.isEmpty()) {
-            while (drap) {
+        if (ChronoUnit.DAYS.between(LocalDate.now(), LocalDate.of(ANNEE, MOIS, JOUR)) < 31) {
+            int nbplaces = nbPlacesTotalesDispoEtu;
+            Set<Map.Entry<Particulier, Reservation>> set = lesReservations.entrySet();
+            while (!etudiantDemandeAttente.isEmpty()) {
                 Etudiant etudiant = etudiantDemandeAttente.peek();
                 for (Map.Entry<Particulier, Reservation> entree : set) {
                     if (lesEtudiants.contains(entree.getKey())) {
@@ -538,8 +566,8 @@ public class Gala implements Serializable {
                             if (nbplaces - nbplacesdemandees >= 0) {
                                 etudiantDemandeAcceptee.add(etudiant);
                                 etudiantDemandeAttente.poll();
+                                nbplaces -= nbplacesdemandees;
                             } else {
-                                drap = false;
                                 break;
                             }
                         }
