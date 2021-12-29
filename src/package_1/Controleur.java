@@ -107,11 +107,11 @@ public class Controleur {
                                         try {
                                             leGala.supprimerReservation(pers);
                                             System.out.println("La réservation à votre nom a été supprimée");
-                                            leGala.desincrire(pers);
+                                            leGala.desinscrire(pers);
                                             System.out.println("Désinscription effectué, FIN");
                                         } catch (PasDeReservation e) {
                                             System.out.println(e.getMessage() + ", Désincription effectuée, FIN");
-                                            leGala.desincrire(pers);
+                                            leGala.desinscrire(pers);
                                         } catch (PlusDeTempsException e) {
                                             System.out.println(e.getMessage() + ", FIN");
                                         }
@@ -245,11 +245,11 @@ public class Controleur {
                                             try {
                                                 leGala.supprimerReservation(etu);
                                                 System.out.println("La réservation à votre nom a été supprimée");
-                                                leGala.desincrire(etu);
+                                                leGala.desinscrire(etu);
                                                 System.out.println("Désinscription effectué, FIN");
                                             } catch (PasDeReservation e) {
                                                 System.out.println(e.getMessage() + ", Désincription effectuée, FIN");
-                                                leGala.desincrire(etu);
+                                                leGala.desinscrire(etu);
                                             } catch (PlusDeTempsException e) {
                                                 System.out.println(e.getMessage() + ", FIN");
                                         }

@@ -201,7 +201,7 @@ public class Gala implements Serializable {
      * @param part le Particulier qui est l'utilisateur
      * @throw PasInscrisException() si l'étudiant n'est pas inscrit
      */
-    public void desincrire(Particulier part) {
+    public void desinscrire(Particulier part) {
         if (lesEtudiantsInscrit.contains(part)) {
             lesEtudiantsInscrit.remove(part);
         } else if (lePersonnelInscrit.contains(part)) {
