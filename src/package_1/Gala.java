@@ -288,7 +288,7 @@ public class Gala implements Serializable {
                     double montant = calculMontant(e, reserv.getNombrePlaces());
                     lesReservations.replace(e, reserv, new Reservation(reserv, montant, numeroTable));
                     lesTablesEtu.get(table).add(e);
-                    table.supprimerPlaces(table.getNumTable(), reserv.getNombrePlaces());
+                    table.supprimerPlaces(reserv.getNombrePlaces());
                     etudiantDemandeAcceptee.remove(e);
                 } else {
                     throw new PlusDePlaceDispoException();
@@ -320,7 +320,7 @@ public class Gala implements Serializable {
                         double montant = calculMontant(pers, nombrePlaces);
                         lesReservations.put(pers, new Reservation(new Reservation(nombrePlaces, montant), montant, numeroTable));
                         lesTablesPerso.get(table).add(pers);
-                        table.supprimerPlaces(table.getNumTable(), nombrePlaces);
+                        table.supprimerPlaces(nombrePlaces);
                     } else if (table.getNumTable() == numeroTable && table.getNombrePlacesLibres() < nombrePlaces) {
                         throw new PlusDePlaceDispoException();
                     }
