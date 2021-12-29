@@ -43,7 +43,12 @@ public class Reservation implements Serializable {
      * @return l'état d'une réservation sous la forme d'un String
      */
     public String toString(){
-        String s = "faite le "+JOUR+"/"+MOIS+"/"+ANNEE+", table n°"+numeroTable+" pour "+nombrePlaces+" personne(s) s'élevant à un montant de "+montantReservation+"€";
+        String s="";
+        if (numeroTable==0){
+            s = "faite le "+JOUR+"/"+MOIS+"/"+ANNEE+", table indéfini pour "+nombrePlaces+" personne(s) s'élevant à un montant de "+montantReservation+"€";
+        }else{
+            s = "faite le "+JOUR+"/"+MOIS+"/"+ANNEE+", table n°"+numeroTable+" pour "+nombrePlaces+" personne(s) s'élevant à un montant de "+montantReservation+"€";
+        }
         return s;
     }
 

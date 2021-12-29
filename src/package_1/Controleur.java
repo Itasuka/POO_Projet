@@ -89,7 +89,7 @@ public class Controleur {
                                                         int nbPlaces = leIhm.choixPlaces();
                                                         try {
                                                             leGala.creerReservation(pers, nbPlaces, leGala.trouverUneTable(pers, nbPlaces));
-                                                            System.out.println("Réservation effectué, FIN");
+                                                            System.out.println("Réservation effectué à la table numéro "+leGala.getLesReservations().get(pers).getNumeroTable()+", FIN");
                                                             flag5 = false;
                                                             flag4 = false;
                                                             flag3 = false;
@@ -210,7 +210,7 @@ public class Controleur {
                                                             System.out.println(e.getMessage());
                                                             break;
                                                         }
-                                                        System.out.println("Réservation confirmée, FIN");
+                                                        System.out.println("Réservation confirmée à la table numéro "+leGala.getLesReservations().get(etu).getNumeroTable()+", FIN");
                                                         flag5 = false;
                                                         flag4 = false;
                                                         flag3 = false;

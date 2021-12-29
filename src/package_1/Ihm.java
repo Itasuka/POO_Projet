@@ -97,7 +97,7 @@ public class Ihm {
      */
     public int choixTable() {
         while (true) {
-            System.out.println("Choisissez un numéro de table.");
+            System.out.println("Choisissez un numéro de table ou 0 pour quitter.");
             if (scan.hasNextInt()) {
                 return scan.nextInt();
             } else {
