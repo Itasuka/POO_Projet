@@ -61,7 +61,6 @@ public class Gala implements Serializable {
         }
     }
 
-
     //--------------------------METHODES-------------------------------
 
     /** TO STRING GALA
@@ -104,7 +103,6 @@ public class Gala implements Serializable {
         return s;
     }
 
-
     public Gala(LocalDate date) throws FileNotFoundException {
 
         this.ANNEE = date.getYear();
@@ -144,6 +142,11 @@ public class Gala implements Serializable {
         }
     }
 
+    /** description de la fonction calculMontant
+     * @param part le Particulier qui est l'utilisateur
+     * @param nombrePlaces le nombre de places choisi par l'utilisateur
+     * @return le montant de la réservation en fonction de son statut et nombre de places choisi
+     */
     public double calculMontant(Particulier part, int nombrePlaces) {
         double montant = 0;
         if (part.getTarif() == 1) {
@@ -163,12 +166,12 @@ public class Gala implements Serializable {
      * description de la fonction inscription étudiant
      * permet d'ajouter un étudiant dans la liste des étudiants inscrit
      *
-     * @param numeroetu
-     * @param nom
-     * @param prenom
-     * @param tel
-     * @param email
-     * @param annee
+     * @param numeroetu le numéro etudiant de l'utilisateur
+     * @param nom le nom de l'utilisateur
+     * @param prenom le prénom de l'utilisateur
+     * @param tel le numero de téléphone de l'utilisateur
+     * @param email le email de l'utilisateur
+     * @param annee l'année d'étude de l'utilisateur
      * @return true si on l'inscription a été faite et false si il n'est pas dans les étudiant pouvant s'inscire ou alors si il est déja inscrit
      */
     public boolean inscriptionEtudiant(int numeroetu, String nom, String prenom, int tel, String email, int annee) {
@@ -180,16 +183,15 @@ public class Gala implements Serializable {
         return false;
     }
 
-
     /**
      * description de la fonction inscriptionPersonnel
      * permet d'ajouter un personnel dans la liste des personnels inscrit
      *
-     * @param numero
-     * @param nom
-     * @param prenom
-     * @param tel
-     * @param email
+     * @param numero le numero d'identification du personnel
+     * @param nom le nom du personnel
+     * @param prenom le prenom du personnel
+     * @param tel le numero de telephone du personnel
+     * @param email le email du personnel
      * @return true si on peut l'inscription a été faite et false si il n'est pas dans les personnels pouvant s'inscrire ou alors si il est déja inscrit
      */
     public boolean inscriptionPersonnel(int numero, String nom, String prenom, int tel, String email) {
@@ -206,7 +208,7 @@ public class Gala implements Serializable {
      * description de la fonction desinscrire
      * cette fonction permet de désisncrire des listes un particulier
      *
-     * @param part
+     * @param part le Particulier qui est l'utilisateur
      * @throw PasInscrisException() si l'étudiant n'est pas inscrit
      */
     public void desincrire(Particulier part) {
@@ -219,12 +221,11 @@ public class Gala implements Serializable {
         }
     }
 
-
     /**
      * description de la fonction TrouverUneTable
      *
-     * @param p
-     * @param nombreplaces
+     * @param p le Particulier qui est l'utilisateur
+     * @param nombreplaces le nombre de place choisi par l'utilisateur
      * @return donne le numero de la table ou il y a suffisament de place de libre
      * @throw lance PlusDePlaceDispoException() si il n'y a plus assez de places sur aucune table
      */
@@ -252,8 +253,8 @@ public class Gala implements Serializable {
      * description de la fonction creerReservation
      * cette fonction permet de placer un étudiant dans le map des demandes en attente et de créer partiellement sa réservation
      *
-     * @param e
-     * @param nombrePlaces
+     * @param e l'étudiant qui est l'utilisateur
+     * @param nombrePlaces le nombre de place choisi par l'utilisateur
      * @return true si la demande de réservation a été enregisté et false sinon
      * @throw lance MauvaisNombrePlaceException() si la personne n'a pas choisi le nombre de places possible selon son statut
      */
@@ -273,14 +274,13 @@ public class Gala implements Serializable {
         return false;
     }
 
-
     /**
      * description de la fonction confirmerReservation
      * cette fonction permet de supprimer l'étudiant des demandes en attente lorsqu'il finalisera sa réservation
      *
-     * @param e
-     * @param reserv
-     * @param numeroTable
+     * @param e l'Etudiant qui est l'utilisateur
+     * @param reserv le premiere reservation qu'à faite l'étudiant lors de sa mise en attente
+     * @param numeroTable le numéro de table choisi par l'étudiant
      * @return true si l'étudiant est transféré dans les demandes accepté et false sinon
      * @throw lance PlusDePlaceDispoException() si il n'y a plus de places
      */
@@ -313,9 +313,9 @@ public class Gala implements Serializable {
      * description de la fonction creerReservation
      * cette fonction permet de creer une réservation pour un personnel
      *
-     * @param pers
-     * @param nombrePlaces
-     * @param numeroTable
+     * @param pers le Personnel qui est l'utilisateur
+     * @param nombrePlaces le nombre de place qu'a choisi l'utilisateur
+     * @param numeroTable le numero de table qu'a choisi l'utilisateur
      * @return true si la reservation est créé (cas ou la personne n'est pas déjà inscrite) et false sinon
      * @throw lance PlusDePlaceDispoException() si il n'y a plus de places disponibles
      * @throw lance MauvaisNombrePlaceException() si la personne n'a pas choisi le nombre de places possible selon son statut
@@ -348,7 +348,7 @@ public class Gala implements Serializable {
      * description de la fonction supprimerReservation
      * cette fonction permet de supprimer la reversation d'un particulier
      *
-     * @param part
+     * @param part le Particulier qui est l'utilisateur
      * @throw lance PlusDeTempsException() si le particulier s'y prend 10 jours ou moins avant le Gala
      * @throw lance PasDeReservation() si il n'y a plus de places
      */
@@ -385,7 +385,7 @@ public class Gala implements Serializable {
      * description de la fonction afficherPlanTable
      * cette fonction permet d'afficher le plan de table sous la forme d'un String
      *
-     * @param planTable
+     * @param planTable le plan de table qui lesTablesEtu ou lesTablesPerso selon si l'utilisateur est un personnel ou un etudiant
      * @return le nombre de place restantes par table avec le nom , prenom et nombre d'accompagnant
      */
     public String afficherPlanTable(SortedMap<Table, ArrayList<Particulier>> planTable) {
@@ -401,12 +401,11 @@ public class Gala implements Serializable {
         return res;
     }
 
-
     /**
      * description de la fonction nbPlacePossible
      * cette fonction donne le nombre de place possible pour les étudiants selon leur année et les personnels et les places libres aux tables
      *
-     * @param p
+     * @param p le Particulier qui est l'utilisateur
      * @return le nombre de place possibles à réserver par l'utilisateur
      */
     public int nbPlacesPossible(Particulier p) {
@@ -462,7 +461,7 @@ public class Gala implements Serializable {
      * description de la fonction afficherNbPlacesPossible
      * cette fonction affiche le nombre de places maximun que le particulier peut réserver
      *
-     * @param p
+     * @param p le Particulier qui est l'utilisateur
      * @return le string donnant le nombre de places
      */
     public String afficherNbPlacesPossible(Particulier p) {
@@ -475,7 +474,7 @@ public class Gala implements Serializable {
      * description de la fonction etuExiste
      * cette fonction vérifie si un étudiant est dans le map lesEtudiants
      *
-     * @param numero
+     * @param numero le numero d'etudiant de l'utilisateur (si c'est un etudiant)
      * @return l'etudiant si il existe et sinon return null
      */
     public Etudiant etuExiste(int numero) {
@@ -492,7 +491,7 @@ public class Gala implements Serializable {
      * description de la fonction persExiste
      * cette fonction vérifie si un personnel est dans le map lesPersonnel
      *
-     * @param numero
+     * @param numero le numero d'identification de l'utilisateur (si c'est un personnel)
      * @return le personnel si c'est le cas et sinon return null
      */
     public Personnel persExiste(int numero) {
@@ -509,7 +508,7 @@ public class Gala implements Serializable {
      * description de la fonction etuInscrit
      * cette fonction vérifie si un étudiant est dans le map lesEtudiantInscrit
      *
-     * @param numero
+     * @param numero le numero d'etudiant de l'utilisateur (si c'est un etudiant)
      * @return true si il est dans la map et false dans le cas contraire
      */
     public boolean etuInscrit(int numero) {
@@ -526,7 +525,7 @@ public class Gala implements Serializable {
      * description de la fonction persInscrit
      * cette fonction vérifie si un étudiant est dans le map lePersonnelInscrit
      *
-     * @param numero
+     * @param numero le numero d'identification de l'utilisateur (si c'est un personnel)
      * @return true si il est dans la map et false dans le cas contraire
      */
     public boolean persInscrit(int numero) {
