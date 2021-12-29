@@ -59,6 +59,10 @@ public class Controleur {
                                                     boolean flag6 = true;
                                                     while (flag6) {
                                                         int table = leIhm.choixTable();
+                                                        if(table==0){
+                                                            flag5 = false;
+                                                            break;
+                                                        }
                                                         System.out.println(leGala.afficherNbPlacesPossible(pers));
                                                         int nbPlaces = leIhm.choixPlaces();
                                                         try {
@@ -69,8 +73,12 @@ public class Controleur {
                                                             flag3 = false;
                                                             flag2 = false;
                                                             break;
-                                                        } catch (MauvaiseTableException | MauvaisNombrePlaceException | PlusDePlaceDispoException e) {
+                                                        } catch (MauvaiseTableException | MauvaisNombrePlaceException e) {
                                                             System.out.println(e.getMessage());
+                                                        } catch (PlusDePlaceDispoException e) {
+                                                            System.out.println(e.getMessage());
+                                                            flag5 = false;
+                                                            break;
                                                         }
                                                     }
                                                 }
@@ -81,14 +89,18 @@ public class Controleur {
                                                         int nbPlaces = leIhm.choixPlaces();
                                                         try {
                                                             leGala.creerReservation(pers, nbPlaces, leGala.trouverUneTable(pers, nbPlaces));
-                                                            System.out.println("Réservation effectué, FIN");
+                                                            System.out.println("Réservation effectué à la table numéro "+leGala.getLesReservations().get(pers).getNumeroTable()+", FIN");
                                                             flag5 = false;
                                                             flag4 = false;
                                                             flag3 = false;
                                                             flag2 = false;
                                                             break;
-                                                        } catch (MauvaisNombrePlaceException | PlusDePlaceDispoException | MauvaiseTableException e) {
+                                                        } catch (MauvaisNombrePlaceException | MauvaiseTableException e) {
                                                             System.out.println(e.getMessage());
+                                                        } catch (PlusDePlaceDispoException e){
+                                                            System.out.println(e.getMessage());
+                                                            flag5 = false;
+                                                            break;
                                                         }
                                                     }
                                                 }
@@ -166,16 +178,26 @@ public class Controleur {
                                                         boolean flag6 = true;
                                                         while (flag6) {
                                                             int table = leIhm.choixTable();
-                                                            try {
-                                                                leGala.confirmerReservation(etu,leGala.getLesReservations().get(etu),table);
-                                                                System.out.println("Réservation confirmée, FIN");
+                                                            if(table==0){
                                                                 flag5 = false;
-                                                                flag4 = false;
-                                                                flag3 = false;
-                                                                flag2 = false;
                                                                 break;
-                                                            } catch (MauvaiseTableException | MauvaisNombrePlaceException | PlusDePlaceDispoException e) {
-                                                                System.out.println(e.getMessage());
+                                                            }
+                                                            else{
+                                                                try {
+                                                                    leGala.confirmerReservation(etu,leGala.getLesReservations().get(etu),table);
+                                                                    System.out.println("Réservation confirmée, FIN");
+                                                                    flag5 = false;
+                                                                    flag4 = false;
+                                                                    flag3 = false;
+                                                                    flag2 = false;
+                                                                    break;
+                                                                } catch (MauvaiseTableException | MauvaisNombrePlaceException e) {
+                                                                    System.out.println(e.getMessage());
+                                                                } catch (PlusDePlaceDispoException e) {
+                                                                    System.out.println(e.getMessage());
+                                                                    flag5 = false;
+                                                                    break;
+                                                                }
                                                             }
                                                         }
                                                     }if(plan==0){
@@ -184,8 +206,11 @@ public class Controleur {
                                                             leGala.confirmerReservation(etu,leGala.getLesReservations().get(etu),table);
                                                         } catch (MauvaiseTableException e) {
                                                             System.out.println(e.getMessage());
+                                                        } catch (PlusDePlaceDispoException e){
+                                                            System.out.println(e.getMessage());
+                                                            break;
                                                         }
-                                                        System.out.println("Réservation confirmée, FIN");
+                                                        System.out.println("Réservation confirmée à la table numéro "+leGala.getLesReservations().get(etu).getNumeroTable()+", FIN");
                                                         flag5 = false;
                                                         flag4 = false;
                                                         flag3 = false;
