@@ -1,9 +1,6 @@
 package package_1;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 public class Table implements Serializable,Comparable<Table> {
 
