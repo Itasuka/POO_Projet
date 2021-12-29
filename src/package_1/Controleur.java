@@ -4,12 +4,11 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 public class Controleur {
-    private int type = 0;
     private Gala leGala;
-    private Ihm leIhm;
-    private ServiceStockage sS = new ServiceStockage();
+    private final Ihm leIhm;
 
     public Controleur(LocalDate dateGala) throws IOException, ClassNotFoundException {
+        ServiceStockage sS = new ServiceStockage();
         leGala = (Gala) sS.charger();
         if(leGala==null){
             leGala = new Gala(dateGala);
@@ -26,7 +25,7 @@ public class Controleur {
     public void lancerAppli() {
         boolean flag1 = true;
         while (flag1) {
-            type = leIhm.etudiantOuPersonnel();
+            int type = leIhm.etudiantOuPersonnel();
             if (type == 2) {
                 //C'est un personnel
                 boolean flag2 = true;
@@ -287,7 +286,7 @@ public class Controleur {
                     }
                 }
             }
-            else if (type==3){
+            else if (type ==3){
                 break;
             }
             else {

@@ -20,13 +20,13 @@ public class Gala implements Serializable {
     private static final int nbPlacesTotalesDispoEtu = nbTotalTablesEtudiant * 8;
     public Set<Etudiant> lesEtudiants = new HashSet<>();
     public Set<Personnel> lePersonnel = new HashSet<>();
-    private Set<Etudiant> lesEtudiantsInscrit = new HashSet<>();
-    private Set<Personnel> lePersonnelInscrit = new HashSet<>();
-    private PriorityQueue<Etudiant> etudiantDemandeAttente = new PriorityQueue<>(taillepqueue, new Comparaison());
-    private Set<Etudiant> etudiantDemandeAcceptee = new HashSet<>();
-    private SortedMap<Particulier, Reservation> lesReservations = new TreeMap<>();
-    private SortedMap<Table, ArrayList<Particulier>> lesTablesEtu = new TreeMap<>();
-    private SortedMap<Table, ArrayList<Particulier>> lesTablesPerso = new TreeMap<>();
+    private final Set<Etudiant> lesEtudiantsInscrit = new HashSet<>();
+    private final Set<Personnel> lePersonnelInscrit = new HashSet<>();
+    private final PriorityQueue<Etudiant> etudiantDemandeAttente = new PriorityQueue<>(taillepqueue, new Comparaison());
+    private final Set<Etudiant> etudiantDemandeAcceptee = new HashSet<>();
+    private final SortedMap<Particulier, Reservation> lesReservations = new TreeMap<>();
+    private final SortedMap<Table, ArrayList<Particulier>> lesTablesEtu = new TreeMap<>();
+    private final SortedMap<Table, ArrayList<Particulier>> lesTablesPerso = new TreeMap<>();
 
     public PriorityQueue<Etudiant> getEtudiantDemandeAttente() { return etudiantDemandeAttente; }
 
@@ -47,7 +47,7 @@ public class Gala implements Serializable {
     }
     //-----------------------------------------------------------------
 
-    class Comparaison implements Comparator<Etudiant>, Serializable {
+    static class Comparaison implements Comparator<Etudiant>, Serializable {
         @Override
         public int compare(Etudiant e1, Etudiant e2) {
             if (e1.getAnnee() == 5 && e2.getAnnee() != 5) {
@@ -118,9 +118,7 @@ public class Gala implements Serializable {
             String email = sc.next();
             int annee = Integer.parseInt(sc.next());
             Etudiant etudiant = new Etudiant(numero, nom, prenom, tel, email, annee);
-            if (!(lesEtudiants.contains(etudiant))) {
-                lesEtudiants.add(etudiant);
-            }
+            lesEtudiants.add(etudiant);
         }
         Scanner sc2 = new Scanner(new File("src\\personnel.txt"));
         while (sc2.hasNextLine()) {
@@ -130,9 +128,7 @@ public class Gala implements Serializable {
             int tel = Integer.parseInt(sc2.next());
             String email = sc2.next();
             Personnel personnel = new Personnel(numero, nom, prenom, tel, email);
-            if (!(lePersonnel.contains(personnel))) {
-                lePersonnel.add(personnel);
-            }
+            lePersonnel.add(personnel);
         }
         for (int i = 1; i <= nbTotalTablesPersonnel; i++) {
             lesTablesPerso.put(new Table(i), new ArrayList<>());
@@ -175,7 +171,7 @@ public class Gala implements Serializable {
      */
     public void inscriptionEtudiant(int numeroetu, String nom, String prenom, int tel, String email, int annee) {
         Etudiant etudiant = new Etudiant(numeroetu, nom, prenom, tel, email, annee);
-        if (lesEtudiants.contains(etudiant) && !lesEtudiantsInscrit.contains(etudiant)) {
+        if (lesEtudiants.contains(etudiant)) {
             lesEtudiantsInscrit.add(etudiant);
         }
     }
@@ -192,7 +188,7 @@ public class Gala implements Serializable {
      */
     public void inscriptionPersonnel(int numero, String nom, String prenom, int tel, String email) {
         Personnel personnel = new Personnel(numero, nom, prenom, tel, email);
-        if (lePersonnel.contains(personnel) && !lePersonnelInscrit.contains(personnel)) {
+        if (lePersonnel.contains(personnel)) {
             lePersonnelInscrit.add(personnel);
         }
     }
@@ -404,33 +400,24 @@ public class Gala implements Serializable {
         if (lesEtudiants.contains(p)) {
             Etudiant e = (Etudiant) p;
             Set<Table> settableetu = lesTablesEtu.keySet();
+            int nb;
+            int nbp = 0;
             if (e.getAnnee() == 5) {
-                int nb = 4;
-                int nbp = 0;
+                nb = 4;
                 for (Table t : settableetu) {
                     if (t.getNombrePlacesLibres() > nbp) {
                         nbp = t.getNombrePlacesLibres();
                     }
-                }
-                if (nb < nbp) {
-                    return nb;
-                } else {
-                    return nbp;
                 }
             } else {
-                int nb = 2;
-                int nbp = 0;
+                nb = 2;
                 for (Table t : settableetu) {
                     if (t.getNombrePlacesLibres() > nbp) {
                         nbp = t.getNombrePlacesLibres();
                     }
                 }
-                if (nb < nbp) {
-                    return nb;
-                } else {
-                    return nbp;
-                }
             }
+            return Math.min(nb, nbp);
         } else {
             Set<Table> settableperso = lesTablesPerso.keySet();
             int nb = 2;
@@ -440,11 +427,7 @@ public class Gala implements Serializable {
                     nbp = t.getNombrePlacesLibres();
                 }
             }
-            if (nb < nbp) {
-                return nb;
-            } else {
-                return nbp;
-            }
+            return Math.min(nb, nbp);
         }
     }
 
