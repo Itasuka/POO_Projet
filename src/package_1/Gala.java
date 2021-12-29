@@ -58,7 +58,6 @@ public class Gala implements Serializable {
             }
             //if (e1.getAnnee()==5 && e2.getAnnee()==5 || e1.getAnnee()!=5 && e2.getAnnee()!=5)
             return e1.getReserv().getDateReservation().compareTo(e2.getReserv().getDateReservation());
-
         }
     }
 
@@ -292,15 +291,18 @@ public class Gala implements Serializable {
             throw new MauvaiseTableException();
         }
         for (Table table : lesTablesEtu.keySet()) {
-            if (table.getNumTable() == numeroTable && table.getNombrePlacesLibres() >= reserv.getNombrePlaces()) {
-                double montant = calculMontant(e, reserv.getNombrePlaces());
-                lesReservations.replace(e, reserv, new Reservation(reserv, montant, numeroTable));
-                lesTablesEtu.get(table).add(e);
-                table.supprimerPlaces(table.getNumTable(), reserv.getNombrePlaces());
-                etudiantDemandeAcceptee.remove(e);
-                return true;
+            if (table.getNumTable() == numeroTable) {
+                if (table.getNombrePlacesLibres() >= reserv.getNombrePlaces()){
+                    double montant = calculMontant(e, reserv.getNombrePlaces());
+                    lesReservations.replace(e, reserv, new Reservation(reserv, montant, numeroTable));
+                    lesTablesEtu.get(table).add(e);
+                    table.supprimerPlaces(table.getNumTable(), reserv.getNombrePlaces());
+                    etudiantDemandeAcceptee.remove(e);
+                    return true;
+                } else {
+                    throw new PlusDePlaceDispoException();
+                }
             }
-            throw new PlusDePlaceDispoException();
         }
         return false;
     }
