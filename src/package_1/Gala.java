@@ -172,15 +172,12 @@ public class Gala implements Serializable {
      * @param tel le numero de téléphone de l'utilisateur
      * @param email le email de l'utilisateur
      * @param annee l'année d'étude de l'utilisateur
-     * @return true si on l'inscription a été faite et false si il n'est pas dans les étudiant pouvant s'inscire ou alors si il est déja inscrit
      */
-    public boolean inscriptionEtudiant(int numeroetu, String nom, String prenom, int tel, String email, int annee) {
+    public void inscriptionEtudiant(int numeroetu, String nom, String prenom, int tel, String email, int annee) {
         Etudiant etudiant = new Etudiant(numeroetu, nom, prenom, tel, email, annee);
         if (lesEtudiants.contains(etudiant) && !lesEtudiantsInscrit.contains(etudiant)) {
             lesEtudiantsInscrit.add(etudiant);
-            return true;
         }
-        return false;
     }
 
     /**
@@ -192,15 +189,12 @@ public class Gala implements Serializable {
      * @param prenom le prenom du personnel
      * @param tel le numero de telephone du personnel
      * @param email le email du personnel
-     * @return true si on peut l'inscription a été faite et false si il n'est pas dans les personnels pouvant s'inscrire ou alors si il est déja inscrit
      */
-    public boolean inscriptionPersonnel(int numero, String nom, String prenom, int tel, String email) {
+    public void inscriptionPersonnel(int numero, String nom, String prenom, int tel, String email) {
         Personnel personnel = new Personnel(numero, nom, prenom, tel, email);
         if (lePersonnel.contains(personnel) && !lePersonnelInscrit.contains(personnel)) {
             lePersonnelInscrit.add(personnel);
-            return true;
         }
-        return false;
     }
 
 
@@ -255,10 +249,9 @@ public class Gala implements Serializable {
      *
      * @param e l'étudiant qui est l'utilisateur
      * @param nombrePlaces le nombre de place choisi par l'utilisateur
-     * @return true si la demande de réservation a été enregisté et false sinon
      * @throw lance MauvaisNombrePlaceException() si la personne n'a pas choisi le nombre de places possible selon son statut
      */
-    public boolean creerReservation(Etudiant e, int nombrePlaces) {
+    public void creerReservation(Etudiant e, int nombrePlaces) {
         if (!lesReservations.containsKey(e)) {
             if (e.getAnnee() == 5 && nombrePlaces <= 4 && nombrePlaces >= 1 || e.getAnnee() < 5 && nombrePlaces <= 2 && nombrePlaces >= 1) {
                 lesReservations.put(e, new Reservation(nombrePlaces, calculMontant(e, nombrePlaces)));
@@ -267,11 +260,11 @@ public class Gala implements Serializable {
                     taillepqueue *= 2;
                 }
                 etudiantDemandeAttente.add(e);
-                return true;
             }
-            throw new MauvaisNombrePlaceException();
+            else{
+                throw new MauvaisNombrePlaceException();
+            }
         }
-        return false;
     }
 
     /**
@@ -281,12 +274,11 @@ public class Gala implements Serializable {
      * @param e l'Etudiant qui est l'utilisateur
      * @param reserv le premiere reservation qu'à faite l'étudiant lors de sa mise en attente
      * @param numeroTable le numéro de table choisi par l'étudiant
-     * @return true si l'étudiant est transféré dans les demandes accepté et false sinon
      * @throw lance PlusDePlaceDispoException() si il n'y a plus de places
      */
     //Pour les Etudiants
     //Avant appel vérifier s'il est dans la map étudiants accepté
-    public boolean confirmerReservation(Etudiant e, Reservation reserv, int numeroTable) throws MauvaiseTableException {
+    public void confirmerReservation(Etudiant e, Reservation reserv, int numeroTable) throws MauvaiseTableException {
         if (numeroTable < 11 || numeroTable > 25) {
             throw new MauvaiseTableException();
         }
@@ -296,15 +288,13 @@ public class Gala implements Serializable {
                     double montant = calculMontant(e, reserv.getNombrePlaces());
                     lesReservations.replace(e, reserv, new Reservation(reserv, montant, numeroTable));
                     lesTablesEtu.get(table).add(e);
-                    table.supprimerPlaces(reserv.getNombrePlaces());
+                    table.supprimerPlaces(table.getNumTable(), reserv.getNombrePlaces());
                     etudiantDemandeAcceptee.remove(e);
-                    return true;
                 } else {
                     throw new PlusDePlaceDispoException();
                 }
             }
         }
-        return false;
     }
 
     //Pour le Personnel (pas de réserv préalable)
@@ -316,11 +306,10 @@ public class Gala implements Serializable {
      * @param pers le Personnel qui est l'utilisateur
      * @param nombrePlaces le nombre de place qu'a choisi l'utilisateur
      * @param numeroTable le numero de table qu'a choisi l'utilisateur
-     * @return true si la reservation est créé (cas ou la personne n'est pas déjà inscrite) et false sinon
      * @throw lance PlusDePlaceDispoException() si il n'y a plus de places disponibles
      * @throw lance MauvaisNombrePlaceException() si la personne n'a pas choisi le nombre de places possible selon son statut
      */
-    public boolean creerReservation(Personnel pers, int nombrePlaces, int numeroTable) throws MauvaiseTableException {
+    public void creerReservation(Personnel pers, int nombrePlaces, int numeroTable) throws MauvaiseTableException {
         if (!lesReservations.containsKey(pers)) {
             if (numeroTable < 0 || numeroTable > 10) {
                 throw new MauvaiseTableException();
@@ -331,16 +320,16 @@ public class Gala implements Serializable {
                         double montant = calculMontant(pers, nombrePlaces);
                         lesReservations.put(pers, new Reservation(new Reservation(nombrePlaces, montant), montant, numeroTable));
                         lesTablesPerso.get(table).add(pers);
-                        table.supprimerPlaces(nombrePlaces);
-                        return true;
+                        table.supprimerPlaces(table.getNumTable(), nombrePlaces);
                     } else if (table.getNumTable() == numeroTable && table.getNombrePlacesLibres() < nombrePlaces) {
                         throw new PlusDePlaceDispoException();
                     }
                 }
             }
-            throw new MauvaisNombrePlaceException();
+            else{
+                throw new MauvaisNombrePlaceException();
+            }
         }
-        return false;
     }
 
 
@@ -357,18 +346,21 @@ public class Gala implements Serializable {
             int numeroTable = lesReservations.get(part).getNumeroTable();
             if (ChronoUnit.DAYS.between(LocalDate.now(), LocalDate.of(ANNEE, MOIS, JOUR)) >= 10) {
                 if (lesEtudiantsInscrit.contains(part)) {
+                    int nbPlaces = lesReservations.get(part).getNombrePlaces();
                     lesReservations.remove(part);
                     etudiantDemandeAttente.remove(part);
                     etudiantDemandeAcceptee.remove(part);
                     for (Table table : lesTablesEtu.keySet()) {
                         if (table.getNumTable() == numeroTable) {
                             lesTablesEtu.get(table).remove(part);
+                            table.ajouterPlaces(nbPlaces);
                         }
                     }
                 }
                 for (Table table : lesTablesPerso.keySet()) {
                     if (table.getNumTable() == numeroTable) {
                         lesTablesPerso.get(table).remove(part);
+                        table.ajouterPlaces(lesReservations.get(part).getNombrePlaces());
                         lesReservations.remove(part);
                     }
                 }
