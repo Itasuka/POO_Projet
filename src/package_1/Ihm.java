@@ -1,10 +1,9 @@
 package package_1;
 
-import java.sql.SQLOutput;
 import java.util.Scanner;
 
 public class Ihm {
-    public Scanner scan = new Scanner(System.in);
+    private final Scanner scan = new Scanner(System.in);
 
     /**description de la fonction etudiantOuPersonnel
      * cette fonction permet de savoir si l'utilisateur est un étudiant ou un personnel

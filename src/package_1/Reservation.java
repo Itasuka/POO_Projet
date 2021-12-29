@@ -8,12 +8,13 @@ public class Reservation implements Serializable {
     private final int MOIS;
     private final int JOUR;
     private int numeroTable;
-    private int nombrePlaces;
-    private double montantReservation;
+    private final int nombrePlaces;
+    private final double montantReservation;
 
     /** CONSTRUCTEUR POUR PREMIER RESERVATION DES ETUDIANTS
      *
-     * @param nombrePlaces
+     * @param nombrePlaces le nombre de place qu'a choisi l'utilisateur
+     * @param montant le montant de la réservation
      */
     public Reservation(int nombrePlaces, double montant) {
         this.ANNEE=LocalDate.now().getYear();
@@ -25,9 +26,9 @@ public class Reservation implements Serializable {
 
     /** CONSTRUCTEUR POUR FINALISER LA RESERVATION
      *
-     * @param r
-     * @param montant
-     * @param numeroTable
+     * @param r la réservation faite auparavant par l'étudiant
+     * @param montant le montant de la réservation
+     * @param numeroTable le numéro de table pour la réservation
      */
     public Reservation(Reservation r, double montant, int numeroTable){
         this.ANNEE=r.ANNEE;
