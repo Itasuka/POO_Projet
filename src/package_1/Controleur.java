@@ -17,7 +17,6 @@ public class Controleur {
         leGala.avancerLaQueue();
         System.out.println(leGala);
         lancerAppli();
-        System.out.println(leGala);
         sS.enregistrer(leGala);
         System.out.println("Sauvegarde effectuée, FIN de l'appli");
     }
@@ -103,7 +102,6 @@ public class Controleur {
                                                     }
                                                 }
                                             }
-
                                         }
                                     } else if (menu == 2) {
                                         try {
@@ -243,8 +241,6 @@ public class Controleur {
                                                 }
                                             }
                                         }
-
-
                                     } else if (menu == 2) {
                                             try {
                                                 leGala.supprimerReservation(etu);

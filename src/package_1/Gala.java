@@ -18,8 +18,8 @@ public class Gala implements Serializable {
     private static final int nbTotalTablesEtudiant = 15;
     private static final int nbTotalTablesPersonnel = 10;
     private static final int nbPlacesTotalesDispoEtu = nbTotalTablesEtudiant * 8;
-    public Set<Etudiant> lesEtudiants = new HashSet<>();
-    public Set<Personnel> lePersonnel = new HashSet<>();
+    private final Set<Etudiant> lesEtudiants = new HashSet<>();
+    private final Set<Personnel> lePersonnel = new HashSet<>();
     private final Set<Etudiant> lesEtudiantsInscrit = new HashSet<>();
     private final Set<Personnel> lePersonnelInscrit = new HashSet<>();
     private final PriorityQueue<Etudiant> etudiantDemandeAttente = new PriorityQueue<>(taillepqueue, new Comparaison());
