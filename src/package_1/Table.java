@@ -1,13 +1,10 @@
 package package_1;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 public class Table implements Serializable,Comparable<Table> {
 
-    private int numTable;
+    private final int numTable;
     private int nombrePlacesLibres;
 
 
@@ -18,19 +15,18 @@ public class Table implements Serializable,Comparable<Table> {
 
     /** description de la fonction <b>supprimerPlaces</b>
      * cette fonction permet de supprimer une place du nombre de place libre
-     * @param numTable
-     * @param places
+
+     * @param places le nombres de places que l'on doit retirer à la table
      */
-    public void supprimerPlaces(int numTable, int places) {
+    public void supprimerPlaces(int places) {
         this.nombrePlacesLibres-=places;
     }
 
     /** description de la fonction <b>ajouterPlaces</b>
      * cette fonction permet d'ajouter une place au nombre de place libre
-     * @param numTable
-     * @param places
+     * @param places le nombres de places que l'on doit remettre à la table
      */
-    public void ajouterPlaces(int numTable, int places) {
+    public void ajouterPlaces(int places) {
         this.nombrePlacesLibres+=places;
     }
 
@@ -47,19 +43,12 @@ public class Table implements Serializable,Comparable<Table> {
      * @return l'état d'une table sous la forme d'un String
      */
     public String toString(){
-        String s = "Table n°"+numTable+" ayant "+nombrePlacesLibres+" places libres";
-        return s;
+        return "Table n°"+numTable+" ayant "+nombrePlacesLibres+" places libres";
     }
 
     @Override
     public int compareTo(Table t){
-        if(this.numTable>t.numTable){
-            return 1;
-        }
-        if(this.numTable<t.numTable){
-            return -1;
-        }
-        return 0;
+        return Integer.compare(this.numTable, t.numTable);
     }
 
 

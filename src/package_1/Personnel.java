@@ -9,8 +9,7 @@ public class Personnel extends Particulier implements Serializable {
     }
 
     public int getTarif() {
-        int tarif = 3;
-        return tarif;
+        return 3;
     }
 }
 

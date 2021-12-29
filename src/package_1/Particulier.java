@@ -49,8 +49,7 @@ public abstract class Particulier implements Comparable<Particulier>, Serializab
      */
     @Override
     public String toString(){
-        String s="";
-        return s+=this.numero+" "+this.nom+" "+this.prenom+" "+this.tel+" "+this.email;
+        return this.numero+" "+this.nom+" "+this.prenom+" "+this.tel+" "+this.email;
     }
 
     @Override
