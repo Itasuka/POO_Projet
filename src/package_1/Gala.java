@@ -17,7 +17,7 @@ public class Gala implements Serializable {
     private static final double tarif3 = 20.0;
     private static final int nbTotalTablesEtudiant = 15;
     private static final int nbTotalTablesPersonnel = 10;
-    private static final int nbPlacesTotalesDispoEtu = nbTotalTablesEtudiant * 8;
+    private int nbPlacesTotalesDispoEtu = nbTotalTablesEtudiant * 8;
     private final Set<Etudiant> lesEtudiants = new HashSet<>();
     private final Set<Personnel> lePersonnel = new HashSet<>();
     private final Set<Etudiant> lesEtudiantsInscrit = new HashSet<>();
@@ -286,6 +286,7 @@ public class Gala implements Serializable {
                     lesTablesEtu.get(table).add(e);
                     table.supprimerPlaces(reserv.getNombrePlaces());
                     etudiantDemandeAcceptee.remove(e);
+                    nbPlacesTotalesDispoEtu-= reserv.getNombrePlaces();
                 } else {
                     throw new PlusDePlaceDispoException();
                 }
@@ -350,6 +351,7 @@ public class Gala implements Serializable {
                         if (table.getNumTable() == numeroTable) {
                             lesTablesEtu.get(table).remove(part);
                             table.ajouterPlaces(nbPlaces);
+                            nbPlacesTotalesDispoEtu+=nbPlaces;
                         }
                     }
                 }
@@ -521,7 +523,8 @@ public class Gala implements Serializable {
         if (ChronoUnit.DAYS.between(LocalDate.now(), LocalDate.of(ANNEE, MOIS, JOUR)) < 31) {
             int nbplaces = nbPlacesTotalesDispoEtu;
             Set<Map.Entry<Particulier, Reservation>> set = lesReservations.entrySet();
-            while (!etudiantDemandeAttente.isEmpty()) {
+            boolean flag1 = true;
+            while (flag1 && !etudiantDemandeAttente.isEmpty()) {
                 Etudiant etudiant = etudiantDemandeAttente.peek();
                 for (Map.Entry<Particulier, Reservation> entree : set) {
                     if (lesEtudiants.contains(entree.getKey())) {
@@ -533,6 +536,7 @@ public class Gala implements Serializable {
                                 etudiantDemandeAttente.poll();
                                 nbplaces -= nbplacesdemandees;
                             } else {
+                                flag1=false;
                                 break;
                             }
                         }
